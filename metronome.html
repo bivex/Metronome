@@ -22,7 +22,7 @@
             padding: 10px;
         }
         .metronome-wrapper {
-            max-width: 620px;
+            max-width: 640px;
             width: 100%;
             margin: 20px auto;
         }
@@ -444,6 +444,22 @@
             line-height: 1.4;
         }
         
+        /* Reading trainer styling */
+        .reading-line {
+            opacity: 0.3;
+            transition: all 0.15s ease;
+            padding: 3px 6px;
+            border-radius: 6px;
+            display: block;
+        }
+        .reading-line.active-line {
+            opacity: 1;
+            background: rgba(0, 245, 212, 0.08);
+            color: #00f5d4;
+            transform: translateX(4px);
+            padding-left: 10px;
+        }
+        
         /* Custom styles for checkboxes */
         .ui.toggle.checkbox.cyber-toggle input:checked ~ label:before {
             background-color: #00f5d4 !important;
@@ -629,7 +645,7 @@
             <button class="preset-btn" data-bpm="60" data-time-sig="4" data-subdiv="1"><span class="bpm-val">60</span><span class="style-name">Lofi</span></button>
             <button class="preset-btn" data-bpm="80" data-time-sig="4" data-subdiv="1"><span class="bpm-val">80</span><span class="style-name">Boom Bap</span></button>
             <button class="preset-btn" data-bpm="90" data-time-sig="4" data-subdiv="1"><span class="bpm-val">90</span><span class="style-name">Hip-Hop</span></button>
-            <button class="preset-btn" data-bpm="100" data-time-sig="4" data-subdiv="1"><span class="bpm-val">100</span><span class="style-name">Book Reading</span></button>
+            <button class="preset-btn" data-bpm="100" data-time-sig="4" data-subdiv="1" data-preset="reading"><span class="bpm-val">100</span><span class="style-name">Book Reading</span></button>
             <button class="preset-btn" data-bpm="110" data-time-sig="4" data-subdiv="1"><span class="bpm-val">110</span><span class="style-name">Trap</span></button>
             <button class="preset-btn" data-bpm="120" data-time-sig="4" data-subdiv="1"><span class="bpm-val">120</span><span class="style-name">House</span></button>
             <button class="preset-btn" data-bpm="140" data-time-sig="4" data-subdiv="1"><span class="bpm-val">140</span><span class="style-name">Drum&Bass</span></button>
@@ -787,6 +803,56 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Speed Reading Trainer Card (Full width span) -->
+            <div class="trainer-card" id="readingTrainerCard" style="grid-column: span 2;">
+                <div class="trainer-header" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                    <div class="ui toggle checkbox cyber-toggle">
+                        <input type="checkbox" id="readingTrainerToggle">
+                        <label for="readingTrainerToggle" class="trainer-title" data-i18n="readingTrainerTitle">Тренажер скорочтения</label>
+                    </div>
+                    
+                    <!-- Mode Selector -->
+                    <div id="readingModeContainer" style="display:flex; gap:12px; align-items:center; opacity: 0; pointer-events: none; transition: opacity 0.2s;">
+                        <label style="color:#6b7280; font-size:0.7em; font-weight:700; text-transform:uppercase; margin:0;" data-i18n="readingModeLabel">Режим</label>
+                        <select class="native-select" id="readingModeSelect" style="padding: 6px 24px 6px 10px; font-size: 0.8em; min-width: auto; height: 30px; background-position: right 8px center;">
+                            <option value="rsvp" selected data-i18n="readingModeRSVP">По слову (RSVP)</option>
+                            <option value="scan" data-i18n="readingModeScan">По строкам</option>
+                        </select>
+                        <div id="beatsPerLineWrapper" style="display:none; gap:6px; align-items:center;">
+                            <label style="color:#6b7280; font-size:0.7em; font-weight:700; text-transform:uppercase; margin:0;" data-i18n="readingLineInterval">Тактов/строку</label>
+                            <input type="number" id="readingLineIntervalInput" value="4" min="1" max="16" style="width:44px; height:30px; background:#05070c; border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:6px; text-align:center; padding:3px; font-weight:700; font-size:0.85em;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trainer-body disabled-body" id="readingTrainerBody">
+                    <div class="reading-grid" style="display:grid; grid-template-columns: 1fr; gap:12px; margin-top: 10px;">
+                        
+                        <!-- Text Input Area -->
+                        <div class="field" id="readingInputArea">
+                            <textarea id="readingTextSource" rows="3" data-i18n-placeholder="readingPastePlaceholder" style="width:100%; background:#05070c; border:1px solid rgba(255, 255, 255, 0.08); border-radius:12px; color:#fff; padding:10px; font-size:0.9em; outline:none; resize:none; font-family:inherit;"></textarea>
+                        </div>
+                        
+                        <!-- RSVP Display Box -->
+                        <div class="reading-display-box" id="rsvpDisplayBox" style="background:#05070c; border:1px solid rgba(255, 255, 255, 0.05); border-radius:14px; height: 90px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                            <!-- ORP Guide lines -->
+                            <div style="position:absolute; top:0; left:50%; width:1px; height:8px; background:rgba(255,255,255,0.15);"></div>
+                            <div style="position:absolute; bottom:0; left:50%; width:1px; height:8px; background:rgba(255,255,255,0.15);"></div>
+                            
+                            <div id="rsvpWordText" style="font-size: 2.2em; font-weight: 700; font-family: monospace; letter-spacing: 0.5px; width: 100%; display: flex; justify-content: center;">
+                                <span style="color:#6b7280; font-size:0.5em; text-transform:uppercase;" data-i18n="readingStartWarning">Запустите метроном для чтения</span>
+                            </div>
+                        </div>
+
+                        <!-- Scan Display Box (Hidden by default) -->
+                        <div class="reading-display-box" id="scanDisplayBox" style="display:none; background:#05070c; border:1px solid rgba(255, 255, 255, 0.05); border-radius:14px; max-height: 180px; overflow-y: auto; padding: 14px;">
+                            <div id="scanTextContainer" style="line-height: 1.6; font-size: 1.05em; text-align: left;"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="beat-circle-container" id="beatCircles"></div>
@@ -854,6 +920,17 @@
     let dictionAutoRotateActive = false;
     let dictionAutoRotateInterval = 8; // bars
     let currentTwisterIndex = 0;
+
+    // Reading Trainer state
+    let readingTrainerActive = false;
+    let readingMode = 'rsvp'; // 'rsvp' or 'scan'
+    let readingBeatsPerLine = 4;
+    let currentWordIndex = -1;
+    let currentLineIndex = -1;
+    let readingTicksCount = 0;
+    
+    let wordsList = [];
+    let linesList = [];
     
     // Smooth rendering trackers
     let activeBeatStartTime = 0;
@@ -861,6 +938,8 @@
     let currentActiveBeatIndex = -1;
     let uiBpmToUpdate = null;
     let uiTwisterChangePending = false;
+    let uiReadingWordUpdatePending = null;
+    let uiReadingLineUpdatePending = null;
 
     // UI Cache
     const $bpmDisplay = document.getElementById('bpmDisplay');
@@ -901,6 +980,18 @@
     const $dictionAutoRotateToggle = document.getElementById('dictionAutoRotateToggle');
     const $dictionIntervalInput = document.getElementById('dictionIntervalInput');
     const $twisterText = document.getElementById('twisterText');
+
+    const $readingTrainerToggle = document.getElementById('readingTrainerToggle');
+    const $readingTrainerBody = document.getElementById('readingTrainerBody');
+    const $readingTrainerCard = document.getElementById('readingTrainerCard');
+    const $readingModeSelect = document.getElementById('readingModeSelect');
+    const $readingModeContainer = document.getElementById('readingModeContainer');
+    const $beatsPerLineWrapper = document.getElementById('beatsPerLineWrapper');
+    const $readingLineIntervalInput = document.getElementById('readingLineIntervalInput');
+    const $readingTextSource = document.getElementById('readingTextSource');
+    const $rsvpDisplayBox = document.getElementById('rsvpDisplayBox');
+    const $scanDisplayBox = document.getElementById('scanDisplayBox');
+    const $rsvpWordText = document.getElementById('rsvpWordText');
 
     const i18n = {
         ru: {
@@ -944,7 +1035,14 @@
             dictionMeterIamb: 'Ямб',
             dictionMeterDactyl: 'Дактиль',
             dictionMeterAmphibrach: 'Амфибрахий',
-            dictionMeterAnapest: 'Анапест'
+            dictionMeterAnapest: 'Анапест',
+            readingTrainerTitle: 'Тренажер скорочтения',
+            readingModeLabel: 'Режим',
+            readingModeRSVP: 'По слову (RSVP)',
+            readingModeScan: 'По строкам',
+            readingLineInterval: 'Тактов на строку',
+            readingPastePlaceholder: 'Вставьте ваш текст сюда для тренировки...',
+            readingStartWarning: 'Запустите метроном для начала чтения'
         },
         en: {
             title: 'Metronome Pro',
@@ -987,7 +1085,14 @@
             dictionMeterIamb: 'Iamb',
             dictionMeterDactyl: 'Dactyl',
             dictionMeterAmphibrach: 'Amphibrach',
-            dictionMeterAnapest: 'Anapest'
+            dictionMeterAnapest: 'Anapest',
+            readingTrainerTitle: 'Speed Reading Trainer',
+            readingModeLabel: 'Mode',
+            readingModeRSVP: 'Flash words (RSVP)',
+            readingModeScan: 'Line Sweeper',
+            readingLineInterval: 'Beats per line',
+            readingPastePlaceholder: 'Paste your text here to practice...',
+            readingStartWarning: 'Start metronome to begin reading'
         }
     };
 
@@ -1020,6 +1125,11 @@
         ]
     };
 
+    const defaultReadingTexts = {
+        ru: "Скорочтение — это способность быстрого восприятия текстовой информации при использовании особых методов чтения.\nОбычный человек читает со скоростью около двухсот слов в минуту.\nС помощью тренировок под ритм метронома эту скорость можно увеличить в три-четыре раза, подавляя мысленное проговаривание слов.\nКаждый клик метронома задает ритм для фокусировки взгляда или перехода к новой строке.\nПопробуйте расслабить зрение и воспринимать слово целиком в центре экрана.",
+        en: "Speed reading is any of several techniques used to improve one's ability to read quickly.\nIt involves methods like chunking, minimizing subvocalization, and pacing eye movements.\nReading under the rhythmic guide of a metronome trains the eyes to sweep smoothly across the lines without regressing.\nEvery tick represents a fixation point or a signal to transition to the next line.\nPaste your own articles or books here to practice rhythm-based scanning!"
+    };
+
     let currentLang = localStorage.getItem('metronome-lang') || 'ru';
 
     function applyI18n() {
@@ -1030,6 +1140,14 @@
                 el.innerHTML = t[key];
             }
         });
+        
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (t[key] !== undefined) {
+                el.setAttribute('placeholder', t[key]);
+            }
+        });
+
         if ($langSelect.value !== currentLang) {
             $langSelect.value = currentLang;
         }
@@ -1038,6 +1156,15 @@
 
         if (dictionTrainerActive) {
             $twisterText.textContent = twisters[currentLang][currentTwisterIndex];
+        }
+
+        if (readingTrainerActive) {
+            const currentVal = $readingTextSource.value.trim();
+            const prevLang = currentLang === 'ru' ? 'en' : 'ru';
+            if (currentVal === defaultReadingTexts[prevLang]) {
+                $readingTextSource.value = defaultReadingTexts[currentLang];
+                parseReadingText();
+            }
         }
     }
 
@@ -1288,6 +1415,24 @@
             }
         }
 
+        // Speed Reading pace controller (triggered on main beats)
+        if (readingTrainerActive && isMainBeat) {
+            if (readingMode === 'rsvp') {
+                if (wordsList.length > 0) {
+                    currentWordIndex = (currentWordIndex + 1) % wordsList.length;
+                    uiReadingWordUpdatePending = wordsList[currentWordIndex];
+                }
+            } else if (readingMode === 'scan') {
+                if (linesList.length > 0) {
+                    if (readingTicksCount === 0 || readingTicksCount % readingBeatsPerLine === 0) {
+                        currentLineIndex = (currentLineIndex + 1) % linesList.length;
+                        uiReadingLineUpdatePending = currentLineIndex;
+                    }
+                    readingTicksCount++;
+                }
+            }
+        }
+
         // Gap Click (Rhythm Keeper)
         const currentBarIndex = Math.floor(tickIndex / ticksPerBar);
         let isMuted = false;
@@ -1378,6 +1523,17 @@
         if (uiTwisterChangePending) {
             changeTongueTwister();
             uiTwisterChangePending = false;
+        }
+
+        // Update Speed Reading text interfaces in sync
+        if (uiReadingWordUpdatePending !== null) {
+            $rsvpWordText.innerHTML = renderORPWord(uiReadingWordUpdatePending);
+            uiReadingWordUpdatePending = null;
+        }
+
+        if (uiReadingLineUpdatePending !== null) {
+            highlightLineInUI(uiReadingLineUpdatePending);
+            uiReadingLineUpdatePending = null;
         }
 
         requestAnimationFrame(animationLoop);
@@ -1581,6 +1737,73 @@
         }, 150);
     }
 
+    // --- RSVP Spritz-style Optimal Recognition Point (ORP) Renderer ---
+    function renderORPWord(word) {
+        if (!word) return '';
+        
+        let orpIndex = 1;
+        const len = word.length;
+        if (len <= 1) orpIndex = 0;
+        else if (len <= 5) orpIndex = 1;
+        else if (len <= 9) orpIndex = 2;
+        else if (len <= 13) orpIndex = 3;
+        else orpIndex = 4;
+        
+        const part1 = word.substring(0, orpIndex);
+        const part2 = word.charAt(orpIndex);
+        const part3 = word.substring(orpIndex + 1);
+        
+        return `<span style="opacity: 0.45; text-align: right; display: inline-block; width: 45%;">${part1}</span>` +
+               `<span style="color: #ff2e93; font-weight: 800; display: inline-block; width: 10%; text-align: center; filter: drop-shadow(0 0 4px rgba(255,46,147,0.6));">${part2}</span>` +
+               `<span style="opacity: 0.45; text-align: left; display: inline-block; width: 45%;">${part3}</span>`;
+    }
+
+    function parseReadingText() {
+        const text = $readingTextSource.value.trim();
+        
+        // Parse RSVP words
+        wordsList = text.split(/\s+/).filter(w => w.length > 0);
+        
+        // Parse scanner lines
+        linesList = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        
+        const $scanTextContainer = document.getElementById('scanTextContainer');
+        $scanTextContainer.innerHTML = '';
+        linesList.forEach((line, i) => {
+            const span = document.createElement('span');
+            span.className = 'reading-line';
+            span.dataset.index = i;
+            span.textContent = line;
+            $scanTextContainer.appendChild(span);
+        });
+        
+        resetReadingState();
+    }
+
+    function resetReadingState() {
+        currentWordIndex = -1;
+        currentLineIndex = -1;
+        readingTicksCount = 0;
+        
+        if (readingMode === 'rsvp') {
+            $rsvpWordText.innerHTML = `<span style="color:#6b7280; font-size:0.5em; text-transform:uppercase;">${i18n[currentLang].readingStartWarning}</span>`;
+        } else {
+            const lineElements = document.querySelectorAll('.reading-line');
+            lineElements.forEach(el => el.classList.remove('active-line'));
+        }
+    }
+
+    function highlightLineInUI(lineIdx) {
+        const lineElements = document.querySelectorAll('.reading-line');
+        lineElements.forEach((el, i) => {
+            el.classList.remove('active-line');
+            if (i === lineIdx) {
+                el.classList.add('active-line');
+                el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    }
+
     function startMetronome() {
         ensureAudioCtx();
         if (isPlaying) return;
@@ -1589,6 +1812,11 @@
         currentTick = 0;
         barsCount = 0;
         animationQueue.length = 0;
+        
+        // Sync reading parser states
+        if (readingTrainerActive) {
+            parseReadingText();
+        }
         
         // Offset starting note slightly to prevent initial visual lag
         nextNoteTime = audioCtx.currentTime + 0.05;
@@ -1618,6 +1846,7 @@
         
         updatePlayButton();
         updateBeatCircles(-1);
+        resetReadingState();
     }
 
     function updatePlayButton() {
@@ -1763,6 +1992,18 @@
             if (this.dataset.preset === 'speech') {
                 $dictionTrainerToggle.checked = true;
                 $dictionTrainerToggle.dispatchEvent(new Event('change'));
+                
+                $readingTrainerToggle.checked = false;
+                $readingTrainerToggle.dispatchEvent(new Event('change'));
+            }
+
+            // Sync with Speed Reading panel if preset is reading
+            if (this.dataset.preset === 'reading') {
+                $readingTrainerToggle.checked = true;
+                $readingTrainerToggle.dispatchEvent(new Event('change'));
+                
+                $dictionTrainerToggle.checked = false;
+                $dictionTrainerToggle.dispatchEvent(new Event('change'));
             }
         });
     });
@@ -1828,6 +2069,12 @@
             
             // Set initial tongue twister
             $twisterText.textContent = twisters[currentLang][currentTwisterIndex];
+            
+            // disable reading trainer
+            if (readingTrainerActive) {
+                $readingTrainerToggle.checked = false;
+                $readingTrainerToggle.dispatchEvent(new Event('change'));
+            }
         } else {
             $dictionTrainerBody.classList.add('disabled-body');
             $dictionTrainerCard.classList.remove('active-card');
@@ -1856,10 +2103,62 @@
         });
     });
 
+    // --- Speed Reading Trainer Inputs ---
+    $readingTrainerToggle.addEventListener('change', function() {
+        readingTrainerActive = this.checked;
+        if (readingTrainerActive) {
+            $readingTrainerBody.classList.remove('disabled-body');
+            $readingTrainerCard.classList.add('active-card');
+            $readingModeContainer.style.opacity = '1';
+            $readingModeContainer.style.pointerEvents = 'auto';
+            
+            // Fill default text
+            if (!$readingTextSource.value.trim()) {
+                $readingTextSource.value = defaultReadingTexts[currentLang];
+            }
+            parseReadingText();
+            
+            // disable diction trainer
+            if (dictionTrainerActive) {
+                $dictionTrainerToggle.checked = false;
+                $dictionTrainerToggle.dispatchEvent(new Event('change'));
+            }
+        } else {
+            $readingTrainerBody.classList.add('disabled-body');
+            $readingTrainerCard.classList.remove('active-card');
+            $readingModeContainer.style.opacity = '0';
+            $readingModeContainer.style.pointerEvents = 'none';
+            stopMetronome();
+            resetReadingState();
+        }
+    });
+
+    $readingModeSelect.addEventListener('change', function() {
+        readingMode = this.value;
+        if (readingMode === 'scan') {
+            $rsvpDisplayBox.style.display = 'none';
+            $scanDisplayBox.style.display = 'block';
+            $beatsPerLineWrapper.style.display = 'flex';
+        } else {
+            $rsvpDisplayBox.style.display = 'flex';
+            $scanDisplayBox.style.display = 'none';
+            $beatsPerLineWrapper.style.display = 'none';
+        }
+        resetReadingState();
+    });
+
+    $readingLineIntervalInput.addEventListener('change', function() {
+        readingBeatsPerLine = Math.max(1, parseInt(this.value, 10) || 4);
+    });
+
+    $readingTextSource.addEventListener('input', function() {
+        parseReadingText();
+    });
+
     // --- Keyboard Shortcuts ---
     document.addEventListener('keydown', function(e) {
         // Exclude typing events inside form fields
-        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') {
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'TEXTAREA') {
             return;
         }
         
