@@ -349,6 +349,7 @@
             <button class="preset-btn" data-bpm="60" data-time-sig="4" data-subdiv="1"><span class="bpm-val">60</span><span class="style-name">Lofi</span></button>
             <button class="preset-btn" data-bpm="80" data-time-sig="4" data-subdiv="1"><span class="bpm-val">80</span><span class="style-name">Boom Bap</span></button>
             <button class="preset-btn" data-bpm="90" data-time-sig="4" data-subdiv="1"><span class="bpm-val">90</span><span class="style-name">Hip-Hop</span></button>
+            <button class="preset-btn" data-bpm="100" data-time-sig="4" data-subdiv="1"><span class="bpm-val">100</span><span class="style-name">Book Reading</span></button>
             <button class="preset-btn" data-bpm="110" data-time-sig="4" data-subdiv="1"><span class="bpm-val">110</span><span class="style-name">Trap</span></button>
             <button class="preset-btn" data-bpm="120" data-time-sig="4" data-subdiv="1"><span class="bpm-val">120</span><span class="style-name">House</span></button>
             <button class="preset-btn" data-bpm="140" data-time-sig="4" data-subdiv="1"><span class="bpm-val">140</span><span class="style-name">Drum&Bass</span></button>
@@ -386,7 +387,9 @@
                 <select class="native-select" id="soundTypeSelect">
                     <option value="classic" selected data-i18n="soundClassic">Классика</option>
                     <option value="electronic" data-i18n="soundElectronic">Электро</option>
+                    <option value="wood_lite" data-i18n="soundWoodLite">Дерево Лайт</option>
                     <option value="wood" data-i18n="soundWood">Дерево</option>
+                    <option value="wood_deep" data-i18n="soundWoodDeep">Дерево ДEEP</option>
                     <option value="drum" data-i18n="soundDrum">Бочка</option>
                     <option value="click" data-i18n="soundClick">Клик</option>
                 </select>
@@ -476,7 +479,9 @@
             subSixteenth: 'Шестнадцатые',
             soundClassic: 'Классика',
             soundElectronic: 'Электро',
+            soundWoodLite: 'Дерево Лайт',
             soundWood: 'Дерево',
+            soundWoodDeep: 'Дерево DEEP',
             soundDrum: 'Бочка',
             soundClick: 'Клик',
             labelTimeSig: 'Размер',
@@ -500,7 +505,9 @@
             subSixteenth: 'Sixteenth',
             soundClassic: 'Classic',
             soundElectronic: 'Electronic',
+            soundWoodLite: 'Wood Lite',
             soundWood: 'Wood',
+            soundWoodDeep: 'Wood DEEP',
             soundDrum: 'Drum',
             soundClick: 'Click',
             labelTimeSig: 'Time Sig',
@@ -595,10 +602,18 @@
             type = 'square';
             freq = isAccent ? 880 : 440;
             vol = isAccent ? 1.0 : 0.5;
+        } else if (soundType === 'wood_lite') {
+            type = 'triangle';
+            freq = isAccent ? 900 : 600;
+            vol = isAccent ? 0.7 : 0.4;
         } else if (soundType === 'wood') {
             type = 'triangle';
             freq = isAccent ? 660 : 440;
             vol = isAccent ? 0.9 : 0.5;
+        } else if (soundType === 'wood_deep') {
+            type = 'triangle';
+            freq = isAccent ? 380 : 220;
+            vol = isAccent ? 1.0 : 0.6;
         } else {
             type = 'sine';
             freq = isAccent ? 1200 : 800;
