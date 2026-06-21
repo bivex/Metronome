@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
     <style>
         body {
             background: radial-gradient(circle at center, #0e1320 0%, #05070c 100%);
@@ -26,29 +25,32 @@
             width: 100%;
             margin: 20px auto;
         }
-        .ui.segment.metronome-card {
-            background: rgba(13, 19, 33, 0.8) !important;
+        .metronome-card {
+            background: rgba(13, 19, 33, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px !important;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.08) !important;
-            padding: 36px 32px 28px !important;
-            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.08);
+            padding: 36px 32px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-sizing: border-box;
         }
-        .ui.header.metronome-title {
+        .metronome-title {
             background: linear-gradient(135deg, #ff2e93 0%, #00f5d4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
-            font-size: 2.4em !important;
-            margin-bottom: 2px !important;
-            font-weight: 800 !important;
+            font-size: 2.4em;
+            margin-top: 0;
+            margin-bottom: 2px;
+            font-weight: 800;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
         .metronome-subtitle {
             text-align: center;
-            color: #8b9bb4;
+            color: #9ca3af;
+            margin-top: 0;
             margin-bottom: 24px;
             font-size: 0.95em;
             font-weight: 500;
@@ -102,7 +104,7 @@
         }
         .bpm-label {
             font-size: 0.8em;
-            color: #8b9bb4;
+            color: #9ca3af;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-top: 4px;
@@ -115,23 +117,26 @@
             gap: 16px;
             margin-bottom: 24px;
         }
-        .bpm-input-row .ui.input {
+        .bpm-input-wrapper {
             flex: 0 0 100px;
         }
-        .bpm-input-row input {
+        .bpm-input-wrapper input {
+            width: 100%;
             text-align: center;
             font-size: 1.3em;
             font-weight: 800;
-            background: #060913 !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #fff !important;
-            border-radius: 12px !important;
-            padding: 10px !important;
-            transition: all 0.2s ease !important;
+            background: #060913;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
         }
-        .bpm-input-row input:focus {
-            border-color: #00f5d4 !important;
-            box-shadow: 0 0 10px rgba(0, 245, 212, 0.3) !important;
+        .bpm-input-wrapper input:focus {
+            border-color: #00f5d4;
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
+            outline: none;
         }
         .native-slider {
             flex: 1;
@@ -209,7 +214,7 @@
             justify-content: center;
             font-weight: 800;
             font-size: 1em;
-            color: #4b5563;
+            color: #8b9bb4;
             user-select: none;
             cursor: pointer;
         }
@@ -245,7 +250,7 @@
             flex-direction: column;
         }
         .setting-col label {
-            color: #8b9bb4;
+            color: #9ca3af;
             font-weight: 700;
             font-size: 0.8em;
             text-transform: uppercase;
@@ -256,7 +261,7 @@
         .native-select {
             width: 100%;
             background: #060913;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: #fff;
             border-radius: 10px;
             padding: 11px 12px;
@@ -292,7 +297,7 @@
             border: 1px solid rgba(255, 255, 255, 0.03);
         }
         .volume-row label {
-            color: #8b9bb4;
+            color: #9ca3af;
             font-weight: 700;
             font-size: 0.8em;
             text-transform: uppercase;
@@ -325,6 +330,7 @@
             border-radius: 16px;
             padding: 16px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
         }
         .trainer-card.active-card {
             border-color: rgba(0, 245, 212, 0.3);
@@ -333,14 +339,6 @@
         }
         .trainer-header {
             margin-bottom: 14px;
-        }
-        .trainer-title {
-            color: #fff !important;
-            font-weight: 800 !important;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 0.9em !important;
         }
         .trainer-body {
             transition: opacity 0.3s ease;
@@ -359,7 +357,7 @@
             flex-direction: column;
         }
         .trainer-grid label {
-            color: #6b7280;
+            color: #9ca3af;
             font-size: 0.7em;
             text-transform: uppercase;
             font-weight: 700;
@@ -368,7 +366,7 @@
         }
         .trainer-grid input {
             background: #05070c;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
             padding: 8px;
             border-radius: 8px;
@@ -377,11 +375,102 @@
             text-align: center;
             outline: none;
             transition: border-color 0.15s ease;
+            box-sizing: border-box;
         }
         .trainer-grid input:focus {
             border-color: #00f5d4;
         }
         
+        /* Custom styles for switch toggle and checkboxes */
+        .switch-container {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            gap: 10px;
+        }
+        .switch-input {
+            display: none;
+        }
+        .switch-slider {
+            position: relative;
+            width: 42px;
+            height: 22px;
+            background-color: #05070c;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 11px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .switch-slider::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #fff;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.2s;
+        }
+        .switch-input:checked + .switch-slider {
+            background-color: #00f5d4;
+            border-color: #00f5d4;
+        }
+        .switch-input:checked + .switch-slider::after {
+            transform: translateX(20px);
+            background-color: #05070c;
+        }
+        .switch-label {
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .checkbox-container {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            gap: 8px;
+        }
+        .checkbox-input {
+            display: none;
+        }
+        .checkbox-box {
+            width: 18px;
+            height: 18px;
+            background-color: #05070c;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        .checkbox-input:checked + .checkbox-box {
+            background-color: #00f5d4;
+            border-color: #00f5d4;
+        }
+        .checkbox-input:checked + .checkbox-box::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 9px;
+            border: solid #05070c;
+            border-width: 0 2px 2px 0;
+            top: 1px;
+            left: 5px;
+            transform: rotate(45deg);
+        }
+        .checkbox-label {
+            color: #9ca3af;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
         /* Poetic meter group styling */
         .meters-btn-group {
             display: flex;
@@ -421,7 +510,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
-            color: #8b9bb4;
+            color: #9ca3af;
             font-size: 0.75em;
             text-transform: uppercase;
             font-weight: 700;
@@ -448,7 +537,7 @@
         .reading-line {
             opacity: 0.3;
             transition: all 0.15s ease;
-            padding: 3px 6px;
+            padding: 4px 8px;
             border-radius: 6px;
             display: block;
         }
@@ -460,67 +549,39 @@
             padding-left: 10px;
         }
         
-        /* Custom styles for checkboxes */
-        .ui.toggle.checkbox.cyber-toggle input:checked ~ label:before {
-            background-color: #00f5d4 !important;
-        }
-        .ui.toggle.checkbox.cyber-toggle label {
-            color: #e5e7eb !important;
-        }
-        .ui.toggle.checkbox.cyber-toggle label:before {
-            background-color: #05070c !important;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-        .ui.toggle.checkbox.cyber-toggle label:after {
-            background: #fff !important;
-        }
-        .ui.checkbox.cyber-checkbox label {
-            color: #8b9bb4 !important;
-        }
-        .ui.checkbox.cyber-checkbox input:checked ~ label:after {
-            color: #00f5d4 !important;
-        }
-        .ui.checkbox.cyber-checkbox input:focus ~ label:before {
-            border-color: #00f5d4 !important;
-        }
-        .ui.checkbox.cyber-checkbox label:before {
-            border: 1px solid rgba(255,255,255,0.15) !important;
-            background: #05070c !important;
-        }
-        
         .play-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
             width: 100%;
-            padding: 16px !important;
-            font-size: 1.25em !important;
-            font-weight: 800 !important;
+            padding: 16px;
+            font-size: 1.25em;
+            font-weight: 800;
             letter-spacing: 2px;
             text-transform: uppercase;
-            border-radius: 16px !important;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            border: none !important;
+            border-radius: 16px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
             cursor: pointer;
+            box-sizing: border-box;
         }
         .play-btn.playing {
-            background: linear-gradient(135deg, #ff2e93 0%, #a200d6 100%) !important;
-            color: #fff !important;
-            box-shadow: 0 0 25px rgba(255, 46, 147, 0.5) !important;
+            background: linear-gradient(135deg, #ff2e93 0%, #a200d6 100%);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(255, 46, 147, 0.5);
         }
         .play-btn:not(.playing) {
-            background: linear-gradient(135deg, #00f5d4 0%, #00bfff 100%) !important;
-            color: #05070c !important;
-            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3) !important;
+            background: linear-gradient(135deg, #00f5d4 0%, #00bfff 100%);
+            color: #05070c;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
         }
         .play-btn:not(.playing):hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(0, 245, 212, 0.5) !important;
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.5);
         }
         .play-btn.playing:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 35px rgba(255, 46, 147, 0.7) !important;
+            box-shadow: 0 0 35px rgba(255, 46, 147, 0.7);
         }
         .play-btn:active {
             transform: translateY(1px);
@@ -528,7 +589,7 @@
         
         .divider-text {
             text-align: center;
-            color: #4b5563;
+            color: #8b9bb4;
             margin: 20px 0 12px;
             font-size: 0.85em;
             text-transform: uppercase;
@@ -577,20 +638,9 @@
             letter-spacing: 0.5px;
         }
         
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
         kbd {
             background: #05070c;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
             padding: 2px 6px;
             border-radius: 4px;
             color: #00f5d4;
@@ -602,17 +652,21 @@
             .bpm-dial-container { width: 180px; height: 180px; }
             .beat-circle { width: 36px; height: 36px; font-size: 0.9em; }
             .beat-circle-container { gap: 8px; }
-            .ui.segment.metronome-card { padding: 24px 16px 20px !important; }
+            .metronome-card { padding: 24px 16px 20px !important; }
         }
     </style>
 </head>
 <body>
 
 <main class="metronome-wrapper">
-    <div class="ui segment metronome-card">
+    <div class="metronome-card">
 
-        <h1 class="ui header metronome-title">
-            <i class="music icon" style="margin-right:8px; font-size:0.9em;"></i>
+        <h1 class="metronome-title">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+            </svg>
             <span data-i18n="title">Metronome</span>
         </h1>
         <p class="metronome-subtitle" data-i18n="subtitle">Тренируй ритм • Прокачивай флоу</p>
@@ -626,12 +680,12 @@
             </svg>
             <div class="bpm-display">
                 <span class="bpm-number" id="bpmDisplay">120</span>
-                <div class="bpm-label" data-i18n="bpmLabel">ударов в минуту</div>
+                <span class="bpm-label" id="bpmLabelText" data-i18n="bpmLabel">ударов в минуту</span>
             </div>
         </div>
 
         <div class="bpm-input-row">
-            <div class="ui input">
+            <div class="bpm-input-wrapper">
                 <label for="bpmInput" class="sr-only">BPM</label>
                 <input type="number" id="bpmInput" value="120" min="20" max="300" step="1">
             </div>
@@ -702,7 +756,7 @@
 
         <div class="volume-row">
             <label for="volumeSlider" data-i18n="volume">Громкость</label>
-            <input type="range" class="native-slider" id="volumeSlider" min="0" max="100" value="80" step="1" aria-label="Volume">
+            <input type="range" class="native-slider" id="volumeSlider" min="0" max="100" value="80" step="1">
             <span id="volumeLabel">80%</span>
         </div>
 
@@ -712,10 +766,11 @@
             <!-- Speed Trainer Card -->
             <div class="trainer-card">
                 <div class="trainer-header">
-                    <div class="ui toggle checkbox cyber-toggle">
-                        <input type="checkbox" id="speedTrainerToggle">
-                        <label for="speedTrainerToggle" class="trainer-title" data-i18n="speedTrainerTitle">Спид-тренер</label>
-                    </div>
+                    <label class="switch-container">
+                        <input type="checkbox" id="speedTrainerToggle" class="switch-input">
+                        <span class="switch-slider"></span>
+                        <span class="switch-label" data-i18n="speedTrainerTitle">Спид-тренер</span>
+                    </label>
                 </div>
                 <div class="trainer-body disabled-body" id="speedTrainerBody">
                     <div class="trainer-grid">
@@ -738,10 +793,11 @@
             <!-- Gap Click Card -->
             <div class="trainer-card">
                 <div class="trainer-header">
-                    <div class="ui toggle checkbox cyber-toggle">
-                        <input type="checkbox" id="gapClickToggle">
-                        <label for="gapClickToggle" class="trainer-title" data-i18n="gapClickTitle">Ритм-кипер (Gap Click)</label>
-                    </div>
+                    <label class="switch-container">
+                        <input type="checkbox" id="gapClickToggle" class="switch-input">
+                        <span class="switch-slider"></span>
+                        <span class="switch-label" data-i18n="gapClickTitle">Ритм-кипер (Gap Click)</span>
+                    </label>
                 </div>
                 <div class="trainer-body disabled-body" id="gapClickBody">
                     <div class="trainer-grid">
@@ -754,10 +810,11 @@
                             <input type="number" id="gapMuteInput" value="2" min="1" max="16">
                         </div>
                         <div class="field" style="display:flex; align-items:center; justify-content:center; padding-top:14px;">
-                            <div class="ui checkbox cyber-checkbox">
-                                <input type="checkbox" id="gapHideVisualsToggle">
-                                <label for="gapHideVisualsToggle" data-i18n="gapClickHideVisuals">Скрывать вспышки</label>
-                            </div>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="gapHideVisualsToggle" class="checkbox-input">
+                                <span class="checkbox-box"></span>
+                                <span class="checkbox-label" data-i18n="gapClickHideVisuals">Скрывать вспышки</span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -766,16 +823,17 @@
             <!-- Speech Diction Trainer Card (Full width span) -->
             <div class="trainer-card" id="dictionTrainerCard" style="grid-column: span 2;">
                 <div class="trainer-header" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-                    <div class="ui toggle checkbox cyber-toggle">
-                        <input type="checkbox" id="dictionTrainerToggle">
-                        <label for="dictionTrainerToggle" class="trainer-title" data-i18n="dictionTrainerTitle">Речевой тренажер</label>
-                    </div>
+                    <label class="switch-container">
+                        <input type="checkbox" id="dictionTrainerToggle" class="switch-input">
+                        <span class="switch-slider"></span>
+                        <span class="switch-label" data-i18n="dictionTrainerTitle">Речевой тренажер</span>
+                    </label>
                     <div id="meterDescription" style="font-size:0.82em; font-weight:700; color:#00f5d4; text-transform:uppercase; letter-spacing:0.5px;"></div>
                 </div>
                 <div class="trainer-body disabled-body" id="dictionTrainerBody">
                     <!-- Poetic Meters Group -->
                     <div style="margin-bottom: 16px;">
-                        <label style="color:#6b7280; font-size:0.7em; font-weight:700; text-transform:uppercase; display:block; margin-bottom:8px;" data-i18n="dictionMeterLabel">Поэтические размеры</label>
+                        <label style="color:#9ca3af; font-size:0.7em; font-weight:700; text-transform:uppercase; display:block; margin-bottom:8px;" data-i18n="dictionMeterLabel">Поэтические размеры</label>
                         <div class="meters-btn-group">
                             <button class="meter-btn" data-meter="trochee" data-i18n="dictionMeterTrochee">Хорей</button>
                             <button class="meter-btn" data-meter="iamb" data-i18n="dictionMeterIamb">Ямб</button>
@@ -790,11 +848,13 @@
                         <div class="twister-header-row">
                             <span data-i18n="dictionTwisterLabel">Скороговорка</span>
                             <div style="display:flex; gap:12px; align-items:center;">
-                                <div class="ui checkbox cyber-checkbox" style="margin:0;">
-                                    <input type="checkbox" id="dictionAutoRotateToggle">
-                                    <label for="dictionAutoRotateToggle" data-i18n="dictionAutoRotate">Автосмена</label>
-                                </div>
-                                <input type="number" id="dictionIntervalInput" value="8" min="1" max="64" style="width:50px; background:#05070c; border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:6px; text-align:center; padding:3px; font-weight:700; font-size:0.9em;">
+                                <label class="checkbox-container" style="margin:0;">
+                                    <input type="checkbox" id="dictionAutoRotateToggle" class="checkbox-input">
+                                    <span class="checkbox-box"></span>
+                                    <span class="checkbox-label" data-i18n="dictionAutoRotate">Автосмена</span>
+                                </label>
+                                <label for="dictionIntervalInput" class="sr-only">Interval</label>
+                                <input type="number" id="dictionIntervalInput" value="8" min="1" max="64" style="width:50px; background:#05070c; border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:6px; text-align:center; padding:3px; font-weight:700; font-size:0.9em; box-sizing:border-box;">
                             </div>
                         </div>
                         <div class="twister-text-box">
@@ -807,21 +867,22 @@
             <!-- Speed Reading Trainer Card (Full width span) -->
             <div class="trainer-card" id="readingTrainerCard" style="grid-column: span 2;">
                 <div class="trainer-header" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-                    <div class="ui toggle checkbox cyber-toggle">
-                        <input type="checkbox" id="readingTrainerToggle">
-                        <label for="readingTrainerToggle" class="trainer-title" data-i18n="readingTrainerTitle">Тренажер скорочтения</label>
-                    </div>
+                    <label class="switch-container">
+                        <input type="checkbox" id="readingTrainerToggle" class="switch-input">
+                        <span class="switch-slider"></span>
+                        <span class="switch-label" data-i18n="readingTrainerTitle">Тренажер скорочтения</span>
+                    </label>
                     
                     <!-- Mode Selector -->
                     <div id="readingModeContainer" style="display:flex; gap:12px; align-items:center; opacity: 0; pointer-events: none; transition: opacity 0.2s;">
-                        <label style="color:#6b7280; font-size:0.7em; font-weight:700; text-transform:uppercase; margin:0;" data-i18n="readingModeLabel">Режим</label>
+                        <label for="readingModeSelect" style="color:#9ca3af; font-size:0.7em; font-weight:700; text-transform:uppercase; margin:0;" data-i18n="readingModeLabel">Режим</label>
                         <select class="native-select" id="readingModeSelect" style="padding: 6px 24px 6px 10px; font-size: 0.8em; min-width: auto; height: 30px; background-position: right 8px center;">
                             <option value="rsvp" selected data-i18n="readingModeRSVP">По слову (RSVP)</option>
                             <option value="scan" data-i18n="readingModeScan">По строкам</option>
                         </select>
                         <div id="beatsPerLineWrapper" style="display:none; gap:6px; align-items:center;">
-                            <label style="color:#6b7280; font-size:0.7em; font-weight:700; text-transform:uppercase; margin:0;" data-i18n="readingLineInterval">Тактов/строку</label>
-                            <input type="number" id="readingLineIntervalInput" value="4" min="1" max="16" style="width:44px; height:30px; background:#05070c; border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:6px; text-align:center; padding:3px; font-weight:700; font-size:0.85em;">
+                            <label for="readingLineIntervalInput" style="color:#9ca3af; font-size:0.7em; font-weight:700; text-transform:uppercase; margin:0;" data-i18n="readingLineInterval">Тактов/строку</label>
+                            <input type="number" id="readingLineIntervalInput" value="4" min="1" max="16" style="width:44px; height:30px; background:#05070c; border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:6px; text-align:center; padding:3px; font-weight:700; font-size:0.85em; box-sizing:border-box;">
                         </div>
                     </div>
                 </div>
@@ -831,7 +892,8 @@
                         
                         <!-- Text Input Area -->
                         <div class="field" id="readingInputArea">
-                            <textarea id="readingTextSource" rows="3" data-i18n-placeholder="readingPastePlaceholder" style="width:100%; background:#05070c; border:1px solid rgba(255, 255, 255, 0.08); border-radius:12px; color:#fff; padding:10px; font-size:0.9em; outline:none; resize:none; font-family:inherit;"></textarea>
+                            <label for="readingTextSource" class="sr-only" data-i18n="readingPastePlaceholder">Вставьте ваш текст сюда для тренировки...</label>
+                            <textarea id="readingTextSource" rows="3" style="width:100%; background:#05070c; border:1px solid rgba(255, 255, 255, 0.15); border-radius:12px; color:#fff; padding:10px; font-size:0.9em; outline:none; resize:none; font-family:inherit; box-sizing:border-box;"></textarea>
                         </div>
                         
                         <!-- RSVP Display Box -->
@@ -841,7 +903,7 @@
                             <div style="position:absolute; bottom:0; left:50%; width:1px; height:8px; background:rgba(255,255,255,0.15);"></div>
                             
                             <div id="rsvpWordText" style="font-size: 2.2em; font-weight: 700; font-family: monospace; letter-spacing: 0.5px; width: 100%; display: flex; justify-content: center;">
-                                <span style="color:#6b7280; font-size:0.5em; text-transform:uppercase;" data-i18n="readingStartWarning">Запустите метроном для чтения</span>
+                                <span style="color:#9ca3af; font-size:0.5em; text-transform:uppercase;" data-i18n="readingStartWarning">Запустите метроном для чтения</span>
                             </div>
                         </div>
 
@@ -857,14 +919,30 @@
 
         <div class="beat-circle-container" id="beatCircles"></div>
 
-        <button class="ui button play-btn" id="playBtn">
-            <i class="play icon" id="playIcon"></i>
+        <button class="play-btn" id="playBtn">
+            <svg id="playIconSvg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="margin-right: 8px;">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <svg id="stopIconSvg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="margin-right: 8px; display: none;">
+                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+            </svg>
             <span id="playLabel" data-i18n="start">Запустить</span>
         </button>
 
         <div style="text-align:center;margin-top:20px;">
-            <span style="color:#6b7280;font-size:0.85em; font-weight: 500;" data-i18n="shortcuts">
-                <i class="keyboard icon" style="margin-right:4px;"></i>
+            <span style="color:#9ca3af;font-size:0.85em; font-weight: 500;" data-i18n="shortcuts">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;">
+                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                    <line x1="6" y1="8" x2="6" y2="8"></line>
+                    <line x1="10" y1="8" x2="10" y2="8"></line>
+                    <line x1="14" y1="8" x2="14" y2="8"></line>
+                    <line x1="18" y1="8" x2="18" y2="8"></line>
+                    <line x1="6" y1="12" x2="6" y2="12"></line>
+                    <line x1="10" y1="12" x2="10" y2="12"></line>
+                    <line x1="14" y1="12" x2="14" y2="12"></line>
+                    <line x1="18" y1="12" x2="18" y2="12"></line>
+                    <line x1="7" y1="16" x2="17" y2="16"></line>
+                </svg>
                 Пробел — Play/Stop &nbsp;|&nbsp;
                 <kbd>T</kbd> — Tap &nbsp;|&nbsp;
                 Стрелки ↑↓ — BPM
@@ -947,8 +1025,9 @@
     const $bpmSlider = document.getElementById('bpmSlider');
     const $tapBtn = document.getElementById('tapBtn');
     const $playBtn = document.getElementById('playBtn');
-    const $playIcon = document.getElementById('playIcon');
     const $playLabel = document.getElementById('playLabel');
+    const $playIconSvg = document.getElementById('playIconSvg');
+    const $stopIconSvg = document.getElementById('stopIconSvg');
     const $beatCircles = document.getElementById('beatCircles');
     const $volumeSlider = document.getElementById('volumeSlider');
     const $volumeLabel = document.getElementById('volumeLabel');
@@ -1004,7 +1083,7 @@
             volume: 'Громкость',
             start: 'Запустить',
             stop: 'Стоп',
-            shortcuts: '<i class="keyboard icon" style="margin-right:4px;"></i> Пробел — Play/Stop &nbsp;|&nbsp; <kbd>T</kbd> — Tap &nbsp;|&nbsp; Стрелки ↑↓ — BPM',
+            shortcuts: 'Пробел — Play/Stop &nbsp;|&nbsp; <kbd>T</kbd> — Tap &nbsp;|&nbsp; Стрелки ↑↓ — BPM',
             subQuarter: 'Четверти ♩',
             subEighth: 'Восьмые ♪',
             subSixteenth: 'Шестнадцатые',
@@ -1054,7 +1133,7 @@
             volume: 'Volume',
             start: 'Start',
             stop: 'Stop',
-            shortcuts: '<i class="keyboard icon" style="margin-right:4px;"></i> Space — Play/Stop &nbsp;|&nbsp; <kbd>T</kbd> — Tap &nbsp;|&nbsp; Arrows ↑↓ — BPM',
+            shortcuts: 'Space — Play/Stop &nbsp;|&nbsp; <kbd>T</kbd> — Tap &nbsp;|&nbsp; Arrows ↑↓ — BPM',
             subQuarter: 'Quarter ♩',
             subEighth: 'Eighth ♪',
             subSixteenth: 'Sixteenth',
@@ -1650,7 +1729,7 @@
                 c.style.borderStyle = 'solid';
             } else {
                 c.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                c.style.color = '#4b5563';
+                c.style.color = '#8b9bb4';
                 c.style.borderStyle = 'dashed';
             }
         });
@@ -1753,9 +1832,9 @@
         const part2 = word.charAt(orpIndex);
         const part3 = word.substring(orpIndex + 1);
         
-        return `<span style="opacity: 0.45; text-align: right; display: inline-block; width: 45%;">${part1}</span>` +
+        return `<span style="opacity: 0.55; text-align: right; display: inline-block; width: 45%;">${part1}</span>` +
                `<span style="color: #ff2e93; font-weight: 800; display: inline-block; width: 10%; text-align: center; filter: drop-shadow(0 0 4px rgba(255,46,147,0.6));">${part2}</span>` +
-               `<span style="opacity: 0.45; text-align: left; display: inline-block; width: 45%;">${part3}</span>`;
+               `<span style="opacity: 0.55; text-align: left; display: inline-block; width: 45%;">${part3}</span>`;
     }
 
     function parseReadingText() {
@@ -1786,7 +1865,7 @@
         readingTicksCount = 0;
         
         if (readingMode === 'rsvp') {
-            $rsvpWordText.innerHTML = `<span style="color:#6b7280; font-size:0.5em; text-transform:uppercase;">${i18n[currentLang].readingStartWarning}</span>`;
+            $rsvpWordText.innerHTML = `<span style="color:#9ca3af; font-size:0.5em; text-transform:uppercase;">${i18n[currentLang].readingStartWarning}</span>`;
         } else {
             const lineElements = document.querySelectorAll('.reading-line');
             lineElements.forEach(el => el.classList.remove('active-line'));
@@ -1852,11 +1931,13 @@
     function updatePlayButton() {
         if (isPlaying) {
             $playBtn.classList.add('playing');
-            $playIcon.className = 'stop icon';
+            $playIconSvg.style.display = 'none';
+            $stopIconSvg.style.display = 'inline-block';
             $playLabel.textContent = i18n[currentLang].stop;
         } else {
             $playBtn.classList.remove('playing');
-            $playIcon.className = 'play icon';
+            $playIconSvg.style.display = 'inline-block';
+            $stopIconSvg.style.display = 'none';
             $playLabel.textContent = i18n[currentLang].start;
         }
     }
