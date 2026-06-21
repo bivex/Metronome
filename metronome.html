@@ -4,208 +4,408 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Metronome app for rhythm training, rap flow practice and speech diction exercises.">
-    <title>Metronome</title>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <title>Metronome Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
     <style>
         body {
-            background: #1a1a2e;
+            background: radial-gradient(circle at center, #0e1320 0%, #05070c 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #f3f4f6;
+            margin: 0;
+            padding: 10px;
         }
         .metronome-wrapper {
-            max-width: 560px;
+            max-width: 620px;
             width: 100%;
-            margin: 20px;
+            margin: 20px auto;
         }
         .ui.segment.metronome-card {
-            background: #16213e;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            padding: 36px 32px 28px;
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(13, 19, 33, 0.8) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.08) !important;
+            padding: 36px 32px 28px !important;
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
         }
         .ui.header.metronome-title {
-            color: #e94560 !important;
+            background: linear-gradient(135deg, #ff2e93 0%, #00f5d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-align: center;
-            font-size: 2.2em !important;
-            margin-bottom: 8px !important;
+            font-size: 2.4em !important;
+            margin-bottom: 2px !important;
+            font-weight: 800 !important;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
         .metronome-subtitle {
             text-align: center;
-            color: #c8c8d8;
-            margin-bottom: 28px;
+            color: #8b9bb4;
+            margin-bottom: 24px;
             font-size: 0.95em;
+            font-weight: 500;
+        }
+        
+        /* Interactive Glowing Dial Wrapper */
+        .bpm-dial-container {
+            position: relative;
+            width: 210px;
+            height: 210px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bpm-dial {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+        .dial-bg {
+            stroke: rgba(255, 255, 255, 0.03);
+            transition: stroke 0.1s, stroke-width 0.1s;
+        }
+        .dial-progress {
+            stroke: #ff2e93;
+            filter: drop-shadow(0 0 8px rgba(255, 46, 147, 0.8));
+            transition: stroke-dashoffset 0.04s linear, stroke-width 0.08s ease, stroke 0.3s;
         }
         .bpm-display {
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            margin-bottom: 20px;
+            pointer-events: none;
         }
         .bpm-number {
-            font-size: 5.5em;
+            font-size: 4.8em;
             font-weight: 900;
             color: #ffffff;
             line-height: 1;
             display: block;
             letter-spacing: -2px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
         .bpm-label {
-            font-size: 1em;
-            color: #b8b8c8;
+            font-size: 0.8em;
+            color: #8b9bb4;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             margin-top: 4px;
+            font-weight: 700;
         }
+        
         .bpm-input-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 18px;
+            gap: 16px;
+            margin-bottom: 24px;
         }
         .bpm-input-row .ui.input {
-            flex: 0 0 90px;
+            flex: 0 0 100px;
         }
         .bpm-input-row input {
             text-align: center;
-            font-size: 1.4em;
-            font-weight: 700;
-            background: #0f3460;
-            border: none;
-            color: #fff;
-            border-radius: 8px;
-            padding: 10px;
+            font-size: 1.3em;
+            font-weight: 800;
+            background: #060913 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            border-radius: 12px !important;
+            padding: 10px !important;
+            transition: all 0.2s ease !important;
         }
         .bpm-input-row input:focus {
-            outline: 2px solid #e94560;
+            border-color: #00f5d4 !important;
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.3) !important;
         }
         .native-slider {
             flex: 1;
             -webkit-appearance: none;
             appearance: none;
-            height: 8px;
-            background: #0f3460;
-            border-radius: 4px;
+            height: 6px;
+            background: #060913;
+            border-radius: 3px;
             outline: none;
             cursor: pointer;
         }
         .native-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 22px;
-            height: 22px;
-            background: #e94560;
-            border: 3px solid #fff;
+            width: 20px;
+            height: 20px;
+            background: #00f5d4;
+            border: 3px solid #05070c;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(233,69,96,0.5);
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.7);
+            transition: transform 0.15s ease;
+        }
+        .native-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
         }
         .native-slider::-moz-range-thumb {
-            width: 22px;
-            height: 22px;
-            background: #e94560;
-            border: 3px solid #fff;
+            width: 14px;
+            height: 14px;
+            background: #00f5d4;
+            border: 3px solid #05070c;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(233,69,96,0.5);
-        }
-        .native-slider::-webkit-slider-runnable-track {
-            height: 8px;
-            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.7);
         }
         .tap-btn {
             flex: 0 0 auto;
-            background: #e94560;
-            border: 2px solid #e94560;
-            color: #fff;
-            border-radius: 8px;
-            padding: 12px 18px;
-            font-weight: 700;
+            background: transparent;
+            border: 2px solid #00f5d4;
+            color: #00f5d4;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             font-size: 0.9em;
             text-transform: uppercase;
             letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.05);
         }
         .tap-btn:hover {
-            background: #ff5a78;
-            border-color: #ff5a78;
+            background: #00f5d4;
+            color: #05070c;
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.4);
         }
         .tap-btn:active {
             transform: scale(0.95);
         }
+        
         .beat-circle-container {
             display: flex;
             justify-content: center;
-            gap: 14px;
-            margin: 24px 0 20px;
+            gap: 12px;
+            margin: 20px 0;
         }
         .beat-circle {
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: #0f3460;
-            border: 3px solid rgba(255,255,255,0.12);
-            transition: all 0.08s ease;
+            background: #060913;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
             font-size: 1em;
-            color: #c0c0d0;
+            color: #4b5563;
+            user-select: none;
         }
         .beat-circle.active {
-            background: #e94560;
+            background: #ff2e93;
             border-color: #fff;
             color: #fff;
-            box-shadow: 0 0 20px rgba(233,69,96,0.7);
+            box-shadow: 0 0 15px #ff2e93, 0 0 30px rgba(255, 46, 147, 0.4);
             transform: scale(1.15);
         }
         .beat-circle.accent {
-            border-color: rgba(233,69,96,0.4);
-            color: #ddd;
+            border-color: rgba(255, 46, 147, 0.4);
+            color: #6b7280;
         }
+        
         .settings-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 520px) {
+            .settings-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+        .setting-col {
             display: flex;
-            gap: 10px;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
+            flex-direction: column;
+        }
+        .setting-col label {
+            color: #8b9bb4;
+            font-weight: 700;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 6px;
         }
         .native-select {
-            flex: 1 1 0;
-            min-width: 100px;
-            max-width: 160px;
-        }
-        .native-select {
-            flex: 1;
-            min-width: 120px;
-            background: #0f3460;
-            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            background: #060913;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
-            border-radius: 8px;
-            padding: 10px 12px;
-            font-size: 1em;
+            border-radius: 10px;
+            padding: 11px 12px;
+            font-size: 0.95em;
             font-weight: 600;
             cursor: pointer;
             outline: none;
             appearance: none;
             -webkit-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23e94560' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300f5d4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
-            padding-right: 36px;
+            padding-right: 32px;
+            transition: all 0.2s ease;
         }
         .native-select:focus {
-            border-color: #e94560;
+            border-color: #00f5d4;
+            box-shadow: 0 0 8px rgba(0, 245, 212, 0.3);
         }
         .native-select option {
-            background: #0f3460;
-            color: #ddd;
+            background: #0d1321;
+            color: #fff;
         }
+        
+        .volume-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .volume-row label {
+            color: #8b9bb4;
+            font-weight: 700;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        #volumeLabel {
+            font-weight: 800;
+            color: #00f5d4;
+            font-size: 0.95em;
+            min-width: 45px;
+            text-align: right;
+        }
+        
+        /* Trainer Cards panel */
+        .trainer-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        @media (max-width: 560px) {
+            .trainer-panels {
+                grid-template-columns: 1fr;
+            }
+        }
+        .trainer-card {
+            background: rgba(6, 9, 19, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .trainer-card.active-card {
+            border-color: rgba(0, 245, 212, 0.3);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.1);
+            background: rgba(0, 245, 212, 0.02);
+        }
+        .trainer-header {
+            margin-bottom: 14px;
+        }
+        .trainer-title {
+            color: #fff !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9em !important;
+        }
+        .trainer-body {
+            transition: opacity 0.3s ease;
+        }
+        .trainer-body.disabled-body {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .trainer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .trainer-grid .field {
+            display: flex;
+            flex-direction: column;
+        }
+        .trainer-grid label {
+            color: #6b7280;
+            font-size: 0.7em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+        .trainer-grid input {
+            background: #05070c;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 1.05em;
+            font-weight: 800;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+        .trainer-grid input:focus {
+            border-color: #00f5d4;
+        }
+        
+        /* Custom styles for checkboxes */
+        .ui.toggle.checkbox.cyber-toggle input:checked ~ label:before {
+            background-color: #00f5d4 !important;
+        }
+        .ui.toggle.checkbox.cyber-toggle label {
+            color: #e5e7eb !important;
+        }
+        .ui.toggle.checkbox.cyber-toggle label:before {
+            background-color: #05070c !important;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .ui.toggle.checkbox.cyber-toggle label:after {
+            background: #fff !important;
+        }
+        .ui.checkbox.cyber-checkbox label {
+            color: #8b9bb4 !important;
+        }
+        .ui.checkbox.cyber-checkbox input:checked ~ label:after {
+            color: #00f5d4 !important;
+        }
+        .ui.checkbox.cyber-checkbox input:focus ~ label:before {
+            border-color: #00f5d4 !important;
+        }
+        .ui.checkbox.cyber-checkbox label:before {
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            background: #05070c !important;
+        }
+        
         .play-btn {
             display: flex;
             align-items: center;
@@ -213,89 +413,88 @@
             gap: 10px;
             width: 100%;
             padding: 16px !important;
-            font-size: 1.2em !important;
+            font-size: 1.25em !important;
             font-weight: 800 !important;
             letter-spacing: 2px;
             text-transform: uppercase;
-            border-radius: 12px !important;
-            transition: all 0.15s ease;
+            border-radius: 16px !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: none !important;
+            cursor: pointer;
         }
         .play-btn.playing {
-            background: #e94560 !important;
-            border-color: #e94560 !important;
+            background: linear-gradient(135deg, #ff2e93 0%, #a200d6 100%) !important;
             color: #fff !important;
+            box-shadow: 0 0 25px rgba(255, 46, 147, 0.5) !important;
         }
         .play-btn:not(.playing) {
-            background: #0f3460 !important;
-            border-color: #e94560 !important;
-            color: #e94560 !important;
+            background: linear-gradient(135deg, #00f5d4 0%, #00bfff 100%) !important;
+            color: #05070c !important;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3) !important;
         }
         .play-btn:not(.playing):hover {
-            background: #e94560 !important;
-            color: #fff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.5) !important;
         }
+        .play-btn.playing:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(255, 46, 147, 0.7) !important;
+        }
+        .play-btn:active {
+            transform: translateY(1px);
+        }
+        
         .divider-text {
             text-align: center;
-            color: #999;
-            margin: 16px 0 10px;
+            color: #4b5563;
+            margin: 20px 0 12px;
             font-size: 0.85em;
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-weight: 800;
         }
         .preset-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 8px;
+            margin-bottom: 8px;
         }
         .preset-btn {
-            background: #0f3460;
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #e0e0e0;
-            border-radius: 8px;
-            padding: 10px 6px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: #d1d5db;
+            border-radius: 12px;
+            padding: 8px 4px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.9em;
-            transition: all 0.15s ease;
+            font-size: 0.85em;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
         }
         .preset-btn:hover {
-            background: #e94560;
+            background: linear-gradient(135deg, rgba(255, 46, 147, 0.15) 0%, rgba(0, 245, 212, 0.15) 100%);
             color: #fff;
-            border-color: #e94560;
+            border-color: #00f5d4;
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.15);
+            transform: translateY(-2px);
         }
         .preset-btn .bpm-val {
             display: block;
-            font-size: 1.3em;
-            font-weight: 900;
-            color: #e94560;
+            font-size: 1.35em;
+            font-weight: 800;
+            color: #ff2e93;
+            transition: color 0.2s ease;
         }
         .preset-btn:hover .bpm-val {
-            color: #fff;
+            color: #00f5d4;
         }
         .preset-btn .style-name {
-            font-size: 0.75em;
-            color: #aaa;
+            font-size: 0.72em;
+            color: #9ca3af;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
-        .preset-btn:hover .style-name {
-            color: #ffe0e6;
-        }
-        .volume-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .volume-row label {
-            color: #8a8a9a;
-            font-weight: 600;
-            font-size: 0.85em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
+        
         .sr-only {
             position: absolute;
             width: 1px;
@@ -307,14 +506,21 @@
             white-space: nowrap;
             border: 0;
         }
+        kbd {
+            background: #05070c;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #00f5d4;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
         @media (max-width: 480px) {
-            .bpm-number { font-size: 4em; }
-            .beat-circle { width: 38px; height: 38px; font-size: 0.85em; }
+            .bpm-number { font-size: 3.8em; }
+            .bpm-dial-container { width: 180px; height: 180px; }
+            .beat-circle { width: 36px; height: 36px; font-size: 0.9em; }
             .beat-circle-container { gap: 8px; }
-            .preset-grid { grid-template-columns: repeat(2, 1fr); }
-            .ui.segment.metronome-card { padding: 24px 16px 20px; }
-            .settings-row { flex-direction: column; }
-            .native-select { min-width: auto !important; width: 100%; }
+            .ui.segment.metronome-card { padding: 24px 16px 20px !important; }
         }
     </style>
 </head>
@@ -324,14 +530,22 @@
     <div class="ui segment metronome-card">
 
         <h1 class="ui header metronome-title">
-            <i class="music icon" style="margin-right:8px;"></i>
+            <i class="music icon" style="margin-right:8px; font-size:0.9em;"></i>
             <span data-i18n="title">Metronome</span>
         </h1>
         <p class="metronome-subtitle" data-i18n="subtitle">Тренируй ритм • Прокачивай флоу</p>
 
-        <div class="bpm-display">
-            <span class="bpm-number" id="bpmDisplay">120</span>
-            <div class="bpm-label" data-i18n="bpmLabel">ударов в минуту</div>
+        <!-- Precision Glowing SVG Dial -->
+        <div class="bpm-dial-container">
+            <svg class="bpm-dial" viewBox="0 0 200 200">
+                <circle class="dial-bg" cx="100" cy="100" r="90" fill="none" stroke-width="6"></circle>
+                <circle class="dial-progress" id="dialProgress" cx="100" cy="100" r="90" fill="none" stroke-width="8" stroke-dasharray="565.48" stroke-dashoffset="565.48" stroke-linecap="round"></circle>
+                <g id="dialTicks"></g>
+            </svg>
+            <div class="bpm-display">
+                <span class="bpm-number" id="bpmDisplay">120</span>
+                <div class="bpm-label" data-i18n="bpmLabel">ударов в минуту</div>
+            </div>
         </div>
 
         <div class="bpm-input-row">
@@ -339,7 +553,7 @@
                 <label for="bpmInput" class="sr-only">BPM</label>
                 <input type="number" id="bpmInput" value="120" min="20" max="300" step="1">
             </div>
-            <label for="bpmSlider" class="sr-only">BPM</label>
+            <label for="bpmSlider" class="sr-only">BPM Range</label>
             <input type="range" class="native-slider" id="bpmSlider" min="20" max="300" value="120" step="1">
             <button class="tap-btn" id="tapBtn" title="Tap Tempo" data-i18n="tap">TAP</button>
         </div>
@@ -353,7 +567,7 @@
             <button class="preset-btn" data-bpm="110" data-time-sig="4" data-subdiv="1"><span class="bpm-val">110</span><span class="style-name">Trap</span></button>
             <button class="preset-btn" data-bpm="120" data-time-sig="4" data-subdiv="1"><span class="bpm-val">120</span><span class="style-name">House</span></button>
             <button class="preset-btn" data-bpm="140" data-time-sig="4" data-subdiv="1"><span class="bpm-val">140</span><span class="style-name">Drum&Bass</span></button>
-            <button class="preset-btn" data-bpm="130" data-time-sig="4" data-subdiv="1" data-preset="speech"><span class="bpm-val">130</span><span class="style-name">Speech Dict</span></button>
+            <button class="preset-btn" data-bpm="130" data-time-sig="4" data-subdiv="1"><span class="bpm-val">130</span><span class="style-name">Speech Dict</span></button>
             <button class="preset-btn" data-bpm="160" data-time-sig="4" data-subdiv="1"><span class="bpm-val">160</span><span class="style-name">Rap Fast</span></button>
             <button class="preset-btn" data-bpm="175" data-time-sig="4" data-subdiv="1"><span class="bpm-val">175</span><span class="style-name">Double Time</span></button>
             <button class="preset-btn" data-bpm="200" data-time-sig="4" data-subdiv="2"><span class="bpm-val">200</span><span class="style-name">Speed Rap</span></button>
@@ -364,38 +578,39 @@
         <div class="divider-text" data-i18n="settings">Настройки</div>
 
         <div class="settings-row">
-            <div style="flex:1;min-width:100px;max-width:160px;">
-                <label for="timeSigSelect" style="color:#8a8a9a;font-weight:600;font-size:0.8em;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;" data-i18n="labelTimeSig">Размер</label>
+            <div class="setting-col">
+                <label for="timeSigSelect" data-i18n="labelTimeSig">Размер</label>
                 <select class="native-select" id="timeSigSelect">
                     <option value="2">2/4</option>
                     <option value="3">3/4</option>
                     <option value="4" selected>4/4</option>
+                    <option value="5">5/4</option>
                     <option value="6">6/8</option>
+                    <option value="7">7/8</option>
                     <option value="8">8/8</option>
                 </select>
             </div>
-            <div style="flex:1;min-width:100px;max-width:160px;">
-                <label for="subdivisionSelect" style="color:#8a8a9a;font-weight:600;font-size:0.8em;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;" data-i18n="labelSubdivision">Дробление</label>
+            <div class="setting-col">
+                <label for="subdivisionSelect" data-i18n="labelSubdivision">Дробление</label>
                 <select class="native-select" id="subdivisionSelect">
                     <option value="1" selected data-i18n="subQuarter">Четверти ♩</option>
                     <option value="2" data-i18n="subEighth">Восьмые ♪</option>
                     <option value="4" data-i18n="subSixteenth">Шестнадцатые</option>
                 </select>
             </div>
-            <div style="flex:1;min-width:100px;max-width:160px;">
-                <label for="soundTypeSelect" style="color:#8a8a9a;font-weight:600;font-size:0.8em;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;" data-i18n="labelSound">Звук</label>
+            <div class="setting-col">
+                <label for="soundTypeSelect" data-i18n="labelSound">Звук</label>
                 <select class="native-select" id="soundTypeSelect">
                     <option value="classic" selected data-i18n="soundClassic">Классика</option>
                     <option value="electronic" data-i18n="soundElectronic">Электро</option>
-                    <option value="wood_lite" data-i18n="soundWoodLite">Дерево Лайт</option>
                     <option value="wood" data-i18n="soundWood">Дерево</option>
-                    <option value="wood_deep" data-i18n="soundWoodDeep">Дерево ДEEP</option>
-                    <option value="drum" data-i18n="soundDrum">Бочка</option>
-                    <option value="click" data-i18n="soundClick">Клик</option>
+                    <option value="cowbell" data-i18n="soundCowbell">Ковбелл 808</option>
+                    <option value="drum" data-i18n="soundDrum">Бочка & Клик</option>
+                    <option value="click" data-i18n="soundClick">Шумовой клик</option>
                 </select>
             </div>
-            <div style="flex:1;min-width:100px;max-width:160px;">
-                <label for="langSelect" style="color:#8a8a9a;font-weight:600;font-size:0.8em;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;" data-i18n="labelLang">Язык</label>
+            <div class="setting-col">
+                <label for="langSelect" data-i18n="labelLang">Язык</label>
                 <select class="native-select" id="langSelect">
                     <option value="ru" selected>🇷🇺 RU</option>
                     <option value="en">🇬🇧 EN</option>
@@ -409,6 +624,64 @@
             <span id="volumeLabel">80%</span>
         </div>
 
+        <!-- Advanced Trainer Modes -->
+        <div class="divider-text" data-i18n="trainersTitle">Режимы тренировки</div>
+        <div class="trainer-panels">
+            <!-- Speed Trainer Card -->
+            <div class="trainer-card">
+                <div class="trainer-header">
+                    <div class="ui toggle checkbox cyber-toggle">
+                        <input type="checkbox" id="speedTrainerToggle">
+                        <label for="speedTrainerToggle" class="trainer-title" data-i18n="speedTrainerTitle">Спид-тренер</label>
+                    </div>
+                </div>
+                <div class="trainer-body disabled-body" id="speedTrainerBody">
+                    <div class="trainer-grid">
+                        <div class="field">
+                            <label for="speedIncrementInput" data-i18n="speedTrainerIncrement">Прирост (BPM)</label>
+                            <input type="number" id="speedIncrementInput" value="2" min="1" max="20">
+                        </div>
+                        <div class="field">
+                            <label for="speedStepInput" data-i18n="speedTrainerStep">Каждые (тактов)</label>
+                            <input type="number" id="speedStepInput" value="4" min="1" max="64">
+                        </div>
+                        <div class="field">
+                            <label for="speedTargetInput" data-i18n="speedTrainerTarget">Целевой BPM</label>
+                            <input type="number" id="speedTargetInput" value="180" min="20" max="300">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap Click Card -->
+            <div class="trainer-card">
+                <div class="trainer-header">
+                    <div class="ui toggle checkbox cyber-toggle">
+                        <input type="checkbox" id="gapClickToggle">
+                        <label for="gapClickToggle" class="trainer-title" data-i18n="gapClickTitle">Ритм-кипер (Gap Click)</label>
+                    </div>
+                </div>
+                <div class="trainer-body disabled-body" id="gapClickBody">
+                    <div class="trainer-grid">
+                        <div class="field">
+                            <label for="gapPlayInput" data-i18n="gapClickPlay">Звук (тактов)</label>
+                            <input type="number" id="gapPlayInput" value="2" min="1" max="16">
+                        </div>
+                        <div class="field">
+                            <label for="gapMuteInput" data-i18n="gapClickMute">Тишина (тактов)</label>
+                            <input type="number" id="gapMuteInput" value="2" min="1" max="16">
+                        </div>
+                        <div class="field" style="display:flex; align-items:center; justify-content:center; padding-top:14px;">
+                            <div class="ui checkbox cyber-checkbox">
+                                <input type="checkbox" id="gapHideVisualsToggle">
+                                <label for="gapHideVisualsToggle" data-i18n="gapClickHideVisuals">Скрывать вспышки</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="beat-circle-container" id="beatCircles"></div>
 
         <button class="ui button play-btn" id="playBtn">
@@ -416,11 +689,11 @@
             <span id="playLabel" data-i18n="start">Запустить</span>
         </button>
 
-        <div style="text-align:center;margin-top:16px;">
-            <span style="color:#aaa;font-size:0.8em;" data-i18n="shortcuts">
+        <div style="text-align:center;margin-top:20px;">
+            <span style="color:#6b7280;font-size:0.85em; font-weight: 500;" data-i18n="shortcuts">
                 <i class="keyboard icon" style="margin-right:4px;"></i>
                 Пробел — Play/Stop &nbsp;|&nbsp;
-                <kbd style="background:#0f3460;padding:2px 8px;border-radius:4px;color:#e94560;">T</kbd> — Tap &nbsp;|&nbsp;
+                <kbd>T</kbd> — Tap &nbsp;|&nbsp;
                 Стрелки ↑↓ — BPM
             </span>
         </div>
@@ -438,15 +711,41 @@
     let volume = 0.8;
     let soundType = 'classic';
     let isPlaying = false;
-    let currentBeat = 0;
+    
+    // Scheduler variables
+    let currentTick = 0;
+    let nextNoteTime = 0.0;
+    const scheduleAheadTime = 0.1; // seconds
+    const lookAhead = 25; // milliseconds
     let schedulerTimer = null;
-    let nextNoteTime = 0;
-    const scheduleAheadTime = 0.1;
-    const lookAhead = 25;
-
+    
+    // Animation Queue (precision timing queue)
+    const animationQueue = [];
+    
+    // Tap Tempo variables
     const tapTimes = [];
     let tapTimer = null;
+    
+    // Speed Trainer state
+    let speedTrainerActive = false;
+    let speedTrainerIncrement = 2; // BPM
+    let speedTrainerStep = 4;      // bars
+    let speedTrainerTargetBpm = 180;
+    let barsCount = 0;
+    
+    // Gap Click state
+    let gapClickActive = false;
+    let gapClickPlayBars = 2;
+    let gapClickMuteBars = 2;
+    let gapClickHideVisuals = false;
+    
+    // Smooth rendering trackers
+    let activeBeatStartTime = 0;
+    let activeBeatDuration = 0;
+    let currentActiveBeatIndex = -1;
+    let uiBpmToUpdate = null;
 
+    // UI Cache
     const $bpmDisplay = document.getElementById('bpmDisplay');
     const $bpmInput = document.getElementById('bpmInput');
     const $bpmSlider = document.getElementById('bpmSlider');
@@ -461,10 +760,27 @@
     const $subdivisionSelect = document.getElementById('subdivisionSelect');
     const $soundTypeSelect = document.getElementById('soundTypeSelect');
     const $langSelect = document.getElementById('langSelect');
+    const $dialProgress = document.getElementById('dialProgress');
+    const totalCircumference = 565.48; // 2 * PI * r (r=90)
+
+    // Trainer DOM references
+    const $speedTrainerToggle = document.getElementById('speedTrainerToggle');
+    const $speedIncrementInput = document.getElementById('speedIncrementInput');
+    const $speedStepInput = document.getElementById('speedStepInput');
+    const $speedTargetInput = document.getElementById('speedTargetInput');
+    const $speedTrainerBody = document.getElementById('speedTrainerBody');
+    const $speedTrainerCard = $speedTrainerToggle.closest('.trainer-card');
+
+    const $gapClickToggle = document.getElementById('gapClickToggle');
+    const $gapPlayInput = document.getElementById('gapPlayInput');
+    const $gapMuteInput = document.getElementById('gapMuteInput');
+    const $gapHideVisualsToggle = document.getElementById('gapHideVisualsToggle');
+    const $gapClickBody = document.getElementById('gapClickBody');
+    const $gapClickCard = $gapClickToggle.closest('.trainer-card');
 
     const i18n = {
         ru: {
-            title: 'Metronome',
+            title: 'Metronome Pro',
             subtitle: 'Тренируй ритм • Прокачивай флоу',
             bpmLabel: 'ударов в минуту',
             tap: 'TAP',
@@ -473,24 +789,32 @@
             volume: 'Громкость',
             start: 'Запустить',
             stop: 'Стоп',
-            shortcuts: '<i class="keyboard icon" style="margin-right:4px;"></i> Пробел — Play/Stop &nbsp;|&nbsp; <kbd style="background:#0f3460;padding:2px 8px;border-radius:4px;color:#e94560;">T</kbd> — Tap &nbsp;|&nbsp; Стрелки ↑↓ — BPM',
+            shortcuts: '<i class="keyboard icon" style="margin-right:4px;"></i> Пробел — Play/Stop &nbsp;|&nbsp; <kbd>T</kbd> — Tap &nbsp;|&nbsp; Стрелки ↑↓ — BPM',
             subQuarter: 'Четверти ♩',
             subEighth: 'Восьмые ♪',
             subSixteenth: 'Шестнадцатые',
             soundClassic: 'Классика',
             soundElectronic: 'Электро',
-            soundWoodLite: 'Дерево Лайт',
             soundWood: 'Дерево',
-            soundWoodDeep: 'Дерево DEEP',
-            soundDrum: 'Бочка',
-            soundClick: 'Клик',
+            soundCowbell: 'Ковбелл 808',
+            soundDrum: 'Бочка & Клик',
+            soundClick: 'Шумовой клик',
             labelTimeSig: 'Размер',
             labelSubdivision: 'Дробление',
             labelSound: 'Звук',
             labelLang: 'Язык',
+            trainersTitle: 'Режимы тренировки',
+            speedTrainerTitle: 'Спид-тренер',
+            speedTrainerIncrement: 'Прирост (BPM)',
+            speedTrainerStep: 'Каждые (тактов)',
+            speedTrainerTarget: 'Целевой BPM',
+            gapClickTitle: 'Ритм-кипер (Gap Click)',
+            gapClickPlay: 'Звук (тактов)',
+            gapClickMute: 'Тишина (тактов)',
+            gapClickHideVisuals: 'Скрывать вспышки'
         },
         en: {
-            title: 'Metronome',
+            title: 'Metronome Pro',
             subtitle: 'Train rhythm • Upgrade your flow',
             bpmLabel: 'beats per minute',
             tap: 'TAP',
@@ -499,21 +823,29 @@
             volume: 'Volume',
             start: 'Start',
             stop: 'Stop',
-            shortcuts: '<i class="keyboard icon" style="margin-right:4px;"></i> Space — Play/Stop &nbsp;|&nbsp; <kbd style="background:#0f3460;padding:2px 8px;border-radius:4px;color:#e94560;">T</kbd> — Tap &nbsp;|&nbsp; Arrows ↑↓ — BPM',
+            shortcuts: '<i class="keyboard icon" style="margin-right:4px;"></i> Space — Play/Stop &nbsp;|&nbsp; <kbd>T</kbd> — Tap &nbsp;|&nbsp; Arrows ↑↓ — BPM',
             subQuarter: 'Quarter ♩',
             subEighth: 'Eighth ♪',
             subSixteenth: 'Sixteenth',
             soundClassic: 'Classic',
             soundElectronic: 'Electronic',
-            soundWoodLite: 'Wood Lite',
-            soundWood: 'Wood',
-            soundWoodDeep: 'Wood DEEP',
-            soundDrum: 'Drum',
-            soundClick: 'Click',
+            soundWood: 'Woodblock',
+            soundCowbell: '808 Cowbell',
+            soundDrum: 'Kick & Click',
+            soundClick: 'Noise Click',
             labelTimeSig: 'Time Sig',
             labelSubdivision: 'Subdivision',
             labelSound: 'Sound',
             labelLang: 'Language',
+            trainersTitle: 'Trainer Modes',
+            speedTrainerTitle: 'Speed Trainer',
+            speedTrainerIncrement: 'Increment (BPM)',
+            speedTrainerStep: 'Every (bars)',
+            speedTrainerTarget: 'Target BPM',
+            gapClickTitle: 'Gap Click (Rhythm)',
+            gapClickPlay: 'Play (bars)',
+            gapClickMute: 'Mute (bars)',
+            gapClickHideVisuals: 'Hide Visuals'
         }
     };
 
@@ -543,137 +875,405 @@
         }
     }
 
-    function playNoise(time, duration, vol) {
+    // --- Sound Synthesis Engines (Professional grade) ---
+
+    function playNoise(time, duration, vol, filterFreq = 800) {
         if (!audioCtx) return;
         const bufferSize = Math.floor(audioCtx.sampleRate * duration);
         const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
         const data = buffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.15));
         }
         const noise = audioCtx.createBufferSource();
         noise.buffer = buffer;
         const gain = audioCtx.createGain();
         const filter = audioCtx.createBiquadFilter();
         filter.type = 'highpass';
-        filter.frequency.setValueAtTime(800, time);
+        filter.frequency.setValueAtTime(filterFreq, time);
         noise.connect(filter);
         filter.connect(gain);
         gain.connect(audioCtx.destination);
-        gain.gain.setValueAtTime(vol * volume, time);
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(vol * volume, time + 0.001);
         gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
         noise.start(time);
-        noise.stop(time + duration);
+        noise.stop(time + duration + 0.01);
     }
 
-    function playClick(time, isAccent) {
-        if (!audioCtx) return;
-
-        if (soundType === 'drum') {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            const freq = isAccent ? 120 : 80;
-            osc.frequency.setValueAtTime(freq, time);
-            osc.frequency.exponentialRampToValueAtTime(40, time + 0.1);
-            gain.gain.setValueAtTime(volume * (isAccent ? 1.0 : 0.7), time);
-            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(time);
-            osc.stop(time + 0.16);
-            playNoise(time, 0.04, isAccent ? 0.5 : 0.3);
-            return;
-        }
-
-        if (soundType === 'click') {
-            playNoise(time, 0.02, isAccent ? 0.9 : 0.5);
-            return;
-        }
-
+    function playClassicClick(time, isAccent, vol) {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-
-        let freq, type, vol;
-
-        if (soundType === 'electronic') {
-            type = 'square';
-            freq = isAccent ? 880 : 440;
-            vol = isAccent ? 1.0 : 0.5;
-        } else if (soundType === 'wood_lite') {
-            type = 'triangle';
-            freq = isAccent ? 900 : 600;
-            vol = isAccent ? 0.7 : 0.4;
-        } else if (soundType === 'wood') {
-            type = 'triangle';
-            freq = isAccent ? 660 : 440;
-            vol = isAccent ? 0.9 : 0.5;
-        } else if (soundType === 'wood_deep') {
-            type = 'triangle';
-            freq = isAccent ? 380 : 220;
-            vol = isAccent ? 1.0 : 0.6;
-        } else {
-            type = 'sine';
-            freq = isAccent ? 1200 : 800;
-            vol = isAccent ? 1.0 : 0.6;
-        }
-
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, time);
-        gain.gain.setValueAtTime(vol * volume, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.06);
-        osc.start(time);
-        osc.stop(time + 0.07);
-    }
-
-    function playSubClick(time) {
-        if (!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+        
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, time);
-        gain.gain.setValueAtTime(volume * 0.25, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.03);
+        osc.frequency.setValueAtTime(isAccent ? 1200 : 800, time);
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(vol * (isAccent ? 1.0 : 0.6), time + 0.001);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
+        
+        osc.start(time);
+        osc.stop(time + 0.06);
+    }
+
+    function playElectronicClick(time, isAccent, vol) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
+        
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(isAccent ? 980 : 490, time);
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(vol * (isAccent ? 0.7 : 0.4), time + 0.001);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.035);
+        
+        // Fast snap transient click using highpass noise
+        playNoise(time, 0.015, vol * (isAccent ? 0.35 : 0.2), 1800);
+        
         osc.start(time);
         osc.stop(time + 0.04);
     }
 
-    function getNextBeatTime(bpm) {
-        const secondsPerBeat = 60.0 / bpm;
-        if (subdivision === 1) return secondsPerBeat;
-        if (subdivision === 2) return secondsPerBeat / 2;
-        if (subdivision === 4) return secondsPerBeat / 4;
-        return secondsPerBeat;
+    function playWoodClick(time, isAccent, vol) {
+        // Wooden percussion simulation using multi-frequency additive oscillators with fast decays
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        const gain2 = audioCtx.createGain();
+        
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(isAccent ? 900 : 600, time);
+        osc1.frequency.exponentialRampToValueAtTime(isAccent ? 600 : 400, time + 0.03); // rapid pitch slide
+        
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(isAccent ? 1440 : 960, time);
+        osc2.frequency.exponentialRampToValueAtTime(isAccent ? 1100 : 720, time + 0.02);
+        
+        gain1.gain.setValueAtTime(0, time);
+        gain1.gain.linearRampToValueAtTime(vol * (isAccent ? 0.75 : 0.45), time + 0.001);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, time + 0.045);
+        
+        gain2.gain.setValueAtTime(0, time);
+        gain2.gain.linearRampToValueAtTime(vol * (isAccent ? 0.25 : 0.15), time + 0.001);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, time + 0.02);
+        
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        
+        gain1.connect(audioCtx.destination);
+        gain2.connect(audioCtx.destination);
+        
+        osc1.start(time);
+        osc2.start(time);
+        osc1.stop(time + 0.05);
+        osc2.stop(time + 0.05);
     }
 
-    function scheduleNote(beatNumber, time) {
-        const isAccent = beatNumber % timeSignature === 0;
-        playClick(time, isAccent);
+    function playCowbell(time, isAccent, vol) {
+        // Classic 808 cowbell detune modeling
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        
+        osc1.type = 'square';
+        osc1.frequency.setValueAtTime(isAccent ? 587 : 540, time);
+        
+        osc2.type = 'square';
+        osc2.frequency.setValueAtTime(isAccent ? 880 : 800, time);
+        
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(isAccent ? 850 : 800, time);
+        filter.Q.setValueAtTime(1.5, time);
+        
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(vol * (isAccent ? 0.8 : 0.5), time + 0.002);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.12);
+        
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc1.start(time);
+        osc2.start(time);
+        osc1.stop(time + 0.15);
+        osc2.stop(time + 0.15);
+    }
 
-        if (subdivision > 1) {
-            const subBeats = subdivision;
-            const subDuration = (60.0 / currentBpm) / subBeats;
-            for (let i = 1; i < subBeats; i++) {
-                playSubClick(time + i * subDuration);
-            }
+    function playKick(time, isAccent, vol) {
+        // Synth kick sound with frequency drop + transient click
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'sine';
+        const startFreq = isAccent ? 140 : 100;
+        const endFreq = 42;
+        osc.frequency.setValueAtTime(startFreq, time);
+        osc.frequency.exponentialRampToValueAtTime(endFreq, time + 0.07);
+        
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(vol * (isAccent ? 1.0 : 0.65), time + 0.002);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.16);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start(time);
+        osc.stop(time + 0.17);
+        
+        // sharp click pop
+        playNoise(time, 0.008, vol * (isAccent ? 0.25 : 0.15), 1200);
+    }
+
+    function playSubdivisionClick(time) {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1000, time);
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(volume * 0.25, time + 0.001);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.02);
+        
+        osc.start(time);
+        osc.stop(time + 0.025);
+    }
+
+    function playClick(time, isAccent) {
+        if (!audioCtx) return;
+        const vol = volume;
+        switch (soundType) {
+            case 'classic':
+                playClassicClick(time, isAccent, vol);
+                break;
+            case 'electronic':
+                playElectronicClick(time, isAccent, vol);
+                break;
+            case 'wood':
+                playWoodClick(time, isAccent, vol);
+                break;
+            case 'cowbell':
+                playCowbell(time, isAccent, vol);
+                break;
+            case 'drum':
+                playKick(time, isAccent, vol);
+                break;
+            case 'click':
+                playNoise(time, 0.02, vol * (isAccent ? 0.8 : 0.4), 1600);
+                break;
+            default:
+                playClassicClick(time, isAccent, vol);
         }
-
-        const circleIndex = beatNumber % timeSignature;
-        setTimeout(() => {
-            updateBeatCircles(circleIndex);
-        }, (time - audioCtx.currentTime) * 1000);
     }
+
+    // --- Precise Scheduling Logic (The Two-Clock System) ---
 
     function scheduler() {
         while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
-            scheduleNote(currentBeat, nextNoteTime);
-            const beatDuration = getNextBeatTime(currentBpm);
-            nextNoteTime += beatDuration;
-            currentBeat++;
+            scheduleTick(currentTick, nextNoteTime);
+            // Tick duration changes dynamically based on current BPM and division
+            const tickDuration = (60.0 / currentBpm) / subdivision;
+            nextNoteTime += tickDuration;
+            currentTick++;
+        }
+    }
+
+    function scheduleTick(tickIndex, time) {
+        const ticksPerBeat = subdivision;
+        const isMainBeat = (tickIndex % ticksPerBeat === 0);
+        const beatIndex = Math.floor(tickIndex / ticksPerBeat) % timeSignature;
+        const isAccent = (beatIndex === 0) && isMainBeat;
+
+        // Process Bar progression (evaluated at the start of a bar)
+        const ticksPerBar = timeSignature * subdivision;
+        if (tickIndex > 0 && tickIndex % ticksPerBar === 0) {
+            barsCount++;
+            
+            // Speed Trainer
+            if (speedTrainerActive) {
+                if (barsCount % speedTrainerStep === 0) {
+                    const nextBpm = Math.min(speedTrainerTargetBpm, currentBpm + speedTrainerIncrement);
+                    if (nextBpm !== currentBpm) {
+                        currentBpm = nextBpm;
+                        uiBpmToUpdate = nextBpm; // Thread-safe UI update
+                    }
+                }
+            }
+        }
+
+        // Gap Click (Rhythm Keeper)
+        const currentBarIndex = Math.floor(tickIndex / ticksPerBar);
+        let isMuted = false;
+        let hideVisualsForGap = false;
+        if (gapClickActive) {
+            const totalBarsInCycle = gapClickPlayBars + gapClickMuteBars;
+            const cycleBar = currentBarIndex % totalBarsInCycle;
+            if (cycleBar >= gapClickPlayBars) {
+                isMuted = true;
+                if (gapClickHideVisuals) {
+                    hideVisualsForGap = true;
+                }
+            }
+        }
+
+        // Play Sound
+        if (!isMuted) {
+            if (isMainBeat) {
+                playClick(time, isAccent);
+            } else {
+                playSubdivisionClick(time);
+            }
+        }
+
+        // Push event to precision animation queue
+        animationQueue.push({
+            time: time,
+            tickIndex: tickIndex,
+            beatIndex: beatIndex,
+            isMainBeat: isMainBeat,
+            isAccent: isAccent,
+            bpm: currentBpm,
+            hideVisuals: hideVisualsForGap,
+            barIndex: currentBarIndex,
+            isMuted: isMuted
+        });
+    }
+
+    // --- Precise requestAnimationFrame UI/Visual Synchronization ---
+
+    function animationLoop() {
+        const now = audioCtx ? audioCtx.currentTime : 0;
+
+        if (!isPlaying) {
+            // Idle: dial at 0, process simple inputs
+            $dialProgress.style.strokeDashoffset = totalCircumference;
+            if (uiBpmToUpdate !== null) {
+                setBpm(uiBpmToUpdate, false);
+                uiBpmToUpdate = null;
+            }
+            requestAnimationFrame(animationLoop);
+            return;
+        }
+
+        // Process queue events that has passed our play timestamp
+        while (animationQueue.length > 0 && animationQueue[0].time <= now) {
+            const event = animationQueue.shift();
+            
+            if (event.isMainBeat) {
+                currentActiveBeatIndex = event.beatIndex;
+                activeBeatStartTime = event.time;
+                activeBeatDuration = 60.0 / event.bpm;
+            }
+            
+            triggerVisualFlash(event);
+        }
+
+        // Sweep the dial progress ring smoothly
+        if (activeBeatStartTime > 0) {
+            const elapsed = now - activeBeatStartTime;
+            const progress = Math.min(1.0, Math.max(0.0, elapsed / activeBeatDuration));
+            updateSmoothDial(currentActiveBeatIndex, progress);
+        }
+
+        // React immediately to scheduler BPM bumps
+        if (uiBpmToUpdate !== null) {
+            setBpm(uiBpmToUpdate, false);
+            uiBpmToUpdate = null;
+        }
+
+        requestAnimationFrame(animationLoop);
+    }
+
+    function triggerVisualFlash(event) {
+        if (event.hideVisuals) {
+            // Muted and visuals hidden
+            $dialProgress.style.stroke = 'rgba(255, 255, 255, 0.05)';
+            $dialProgress.style.filter = 'none';
+            updateBeatCircles(-1);
+            return;
+        }
+
+        // Normal flash behavior
+        const mainColor = event.isMuted ? '#8b9bb4' : '#ff2e93';
+        const shadowColor = event.isMuted ? 'rgba(139, 155, 180, 0.5)' : 'rgba(255, 46, 147, 0.8)';
+        $dialProgress.style.stroke = mainColor;
+        $dialProgress.style.filter = `drop-shadow(0 0 8px ${shadowColor})`;
+
+        if (event.isMainBeat) {
+            updateBeatCircles(event.beatIndex);
+            
+            // Pulse the background ring
+            const dialBg = document.querySelector('.dial-bg');
+            if (event.isAccent) {
+                dialBg.style.stroke = event.isMuted ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 46, 147, 0.25)';
+                dialBg.style.strokeWidth = '8';
+                setTimeout(() => {
+                    dialBg.style.stroke = '';
+                    dialBg.style.strokeWidth = '';
+                }, 80);
+            } else {
+                dialBg.style.stroke = event.isMuted ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 245, 212, 0.15)';
+                dialBg.style.strokeWidth = '7';
+                setTimeout(() => {
+                    dialBg.style.stroke = '';
+                    dialBg.style.strokeWidth = '';
+                }, 80);
+            }
+        }
+    }
+
+    function updateSmoothDial(beatIndex, progress) {
+        if (beatIndex < 0) return;
+        
+        let measureProgress = (beatIndex + progress) / timeSignature;
+        measureProgress = Math.max(0, Math.min(1, measureProgress));
+        
+        const offset = totalCircumference * (1 - measureProgress);
+        $dialProgress.style.strokeDashoffset = offset;
+        
+        // Dynamic ring stroke thickness on beats
+        if (progress < 0.12) {
+            $dialProgress.style.strokeWidth = '10';
+        } else {
+            $dialProgress.style.strokeWidth = '8';
+        }
+    }
+
+    function buildDialTicks() {
+        const $ticks = document.getElementById('dialTicks');
+        $ticks.innerHTML = '';
+        const cx = 100;
+        const cy = 100;
+        
+        for (let i = 0; i < timeSignature; i++) {
+            // Polar coordinates (rotated by -90deg dynamically via parent CSS class)
+            const angle = (i * 360 / timeSignature) * Math.PI / 180;
+            const x1 = cx + 84 * Math.cos(angle);
+            const y1 = cy + 84 * Math.sin(angle);
+            const x2 = cx + 96 * Math.cos(angle);
+            const y2 = cy + 96 * Math.sin(angle);
+            
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            
+            if (i === 0) {
+                line.setAttribute('stroke', '#ff2e93');
+                line.setAttribute('stroke-width', '4');
+            } else {
+                line.setAttribute('stroke', '#00f5d4');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('opacity', '0.5');
+            }
+            $ticks.appendChild(line);
         }
     }
 
@@ -701,17 +1301,39 @@
 
     function startMetronome() {
         ensureAudioCtx();
+        if (isPlaying) return;
+        
         isPlaying = true;
-        currentBeat = 0;
+        currentTick = 0;
+        barsCount = 0;
+        animationQueue.length = 0;
+        
+        // Offset starting note slightly to prevent initial visual lag
         nextNoteTime = audioCtx.currentTime + 0.05;
+        
         schedulerTimer = setInterval(scheduler, lookAhead);
         updatePlayButton();
     }
 
     function stopMetronome() {
+        if (!isPlaying) return;
+        
         isPlaying = false;
         clearInterval(schedulerTimer);
         schedulerTimer = null;
+        
+        // Reset trackers
+        animationQueue.length = 0;
+        currentActiveBeatIndex = -1;
+        activeBeatStartTime = 0;
+        
+        $dialProgress.style.strokeDashoffset = totalCircumference;
+        $dialProgress.style.strokeWidth = '8';
+        
+        // Reset aesthetics
+        $dialProgress.style.stroke = '#ff2e93';
+        $dialProgress.style.filter = 'drop-shadow(0 0 8px rgba(255, 46, 147, 0.8))';
+        
         updatePlayButton();
         updateBeatCircles(-1);
     }
@@ -728,7 +1350,7 @@
         }
     }
 
-    function setBpm(val) {
+    function setBpm(val, resetScheduler = true) {
         val = Math.max(20, Math.min(300, Math.round(val)));
         currentBpm = val;
         $bpmDisplay.textContent = val;
@@ -736,14 +1358,20 @@
         $bpmSlider.value = val;
     }
 
-    // --- Native select listeners ---
+    // --- Interactive Listeners ---
+
     $timeSigSelect.addEventListener('change', function() {
         timeSignature = parseInt(this.value, 10);
         buildBeatCircles();
+        buildDialTicks();
     });
 
     $subdivisionSelect.addEventListener('change', function() {
         subdivision = parseInt(this.value, 10);
+        if (isPlaying) {
+            // Align tick indexes on sudden changes to prevent scheduling jumps
+            currentTick = Math.floor(currentTick / subdivision) * subdivision;
+        }
     });
 
     $soundTypeSelect.addEventListener('change', function() {
@@ -755,7 +1383,6 @@
         applyI18n();
     });
 
-    // --- BPM Input ---
     $bpmInput.addEventListener('change', function() {
         const val = parseInt(this.value, 10);
         if (!isNaN(val)) setBpm(val);
@@ -771,7 +1398,6 @@
         }
     });
 
-    // --- Native sliders ---
     $bpmSlider.addEventListener('input', function() {
         setBpm(parseInt(this.value, 10));
     });
@@ -781,8 +1407,8 @@
         $volumeLabel.textContent = this.value + '%';
     });
 
-    // --- Play Button ---
     $playBtn.addEventListener('click', function() {
+        ensureAudioCtx();
         if (isPlaying) {
             stopMetronome();
         } else {
@@ -790,8 +1416,23 @@
         }
     });
 
-    // --- Tap Tempo ---
+    // --- Tap Tempo Logic ---
     $tapBtn.addEventListener('click', function() {
+        ensureAudioCtx();
+        
+        // Tactile sound + flash response
+        if (audioCtx) {
+            playSubdivisionClick(audioCtx.currentTime);
+        }
+        $tapBtn.style.borderColor = '#ff2e93';
+        $tapBtn.style.color = '#ff2e93';
+        $tapBtn.style.boxShadow = '0 0 15px rgba(255, 46, 147, 0.4)';
+        setTimeout(() => {
+            $tapBtn.style.borderColor = '';
+            $tapBtn.style.color = '';
+            $tapBtn.style.boxShadow = '';
+        }, 100);
+
         const now = performance.now();
         tapTimes.push(now);
 
@@ -815,9 +1456,10 @@
         }, 2500);
     });
 
-    // --- Presets ---
+    // --- Preset Buttons ---
     document.querySelectorAll('.preset-btn').forEach(btn => {
         btn.addEventListener('click', function() {
+            ensureAudioCtx();
             const bpm = parseInt(this.dataset.bpm, 10);
             const timeSig = this.dataset.timeSig;
             const subdiv = this.dataset.subdiv;
@@ -826,6 +1468,7 @@
                 timeSignature = parseInt(timeSig, 10);
                 $timeSigSelect.value = timeSig;
                 buildBeatCircles();
+                buildDialTicks();
             }
             if (subdiv) {
                 subdivision = parseInt(subdiv, 10);
@@ -834,28 +1477,89 @@
         });
     });
 
-    // --- Keyboard ---
+    // --- Speed Trainer Inputs ---
+    $speedTrainerToggle.addEventListener('change', function() {
+        speedTrainerActive = this.checked;
+        if (speedTrainerActive) {
+            $speedTrainerBody.classList.remove('disabled-body');
+            $speedTrainerCard.classList.add('active-card');
+            barsCount = 0;
+        } else {
+            $speedTrainerBody.classList.add('disabled-body');
+            $speedTrainerCard.classList.remove('active-card');
+        }
+    });
+
+    $speedIncrementInput.addEventListener('change', function() {
+        speedTrainerIncrement = Math.max(1, parseInt(this.value, 10) || 1);
+    });
+
+    $speedStepInput.addEventListener('change', function() {
+        speedTrainerStep = Math.max(1, parseInt(this.value, 10) || 1);
+    });
+
+    $speedTargetInput.addEventListener('change', function() {
+        speedTrainerTargetBpm = Math.max(20, Math.min(300, parseInt(this.value, 10) || 180));
+    });
+
+    // --- Gap Click Inputs ---
+    $gapClickToggle.addEventListener('change', function() {
+        gapClickActive = this.checked;
+        if (gapClickActive) {
+            $gapClickBody.classList.remove('disabled-body');
+            $gapClickCard.classList.add('active-card');
+        } else {
+            $gapClickBody.classList.add('disabled-body');
+            $gapClickCard.classList.remove('active-card');
+            // reset dial stroke styles
+            $dialProgress.style.stroke = '#ff2e93';
+            $dialProgress.style.filter = 'drop-shadow(0 0 8px rgba(255, 46, 147, 0.8))';
+        }
+    });
+
+    $gapPlayInput.addEventListener('change', function() {
+        gapClickPlayBars = Math.max(1, parseInt(this.value, 10) || 2);
+    });
+
+    $gapMuteInput.addEventListener('change', function() {
+        gapClickMuteBars = Math.max(1, parseInt(this.value, 10) || 2);
+    });
+
+    $gapHideVisualsToggle.addEventListener('change', function() {
+        gapClickHideVisuals = this.checked;
+    });
+
+    // --- Keyboard Shortcuts ---
     document.addEventListener('keydown', function(e) {
+        // Exclude typing events inside form fields
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') {
+            return;
+        }
+        
         if (e.code === 'Space') {
             e.preventDefault();
             if (isPlaying) stopMetronome();
             else startMetronome();
         } else if (e.key === 't' || e.key === 'T') {
-            if (document.activeElement.tagName !== 'INPUT') {
-                $tapBtn.click();
-            }
-        } else if (e.key === 'ArrowUp' && document.activeElement !== $bpmInput) {
+            e.preventDefault();
+            $tapBtn.click();
+        } else if (e.key === 'ArrowUp') {
             e.preventDefault();
             setBpm(currentBpm + 1);
-        } else if (e.key === 'ArrowDown' && document.activeElement !== $bpmInput) {
+        } else if (e.key === 'ArrowDown') {
             e.preventDefault();
             setBpm(currentBpm - 1);
         }
     });
 
+    // Initialize
     buildBeatCircles();
+    buildDialTicks();
     setBpm(120);
     applyI18n();
+    
+    // Start precision visual loops
+    requestAnimationFrame(animationLoop);
 })();
 </script>
 
