@@ -211,17 +211,21 @@
             font-size: 1em;
             color: #4b5563;
             user-select: none;
+            cursor: pointer;
         }
-        .beat-circle.active {
-            background: #ff2e93;
-            border-color: #fff;
-            color: #fff;
+        .beat-circle.active-accent {
+            background: #ff2e93 !important;
+            border-color: #fff !important;
+            color: #fff !important;
             box-shadow: 0 0 15px #ff2e93, 0 0 30px rgba(255, 46, 147, 0.4);
-            transform: scale(1.15);
+            transform: scale(1.18);
         }
-        .beat-circle.accent {
-            border-color: rgba(255, 46, 147, 0.4);
-            color: #6b7280;
+        .beat-circle.active-normal {
+            background: #00f5d4 !important;
+            border-color: #fff !important;
+            color: #05070c !important;
+            box-shadow: 0 0 15px #00f5d4, 0 0 30px rgba(0, 245, 212, 0.4);
+            transform: scale(1.18);
         }
         
         .settings-row {
@@ -376,6 +380,68 @@
         }
         .trainer-grid input:focus {
             border-color: #00f5d4;
+        }
+        
+        /* Poetic meter group styling */
+        .meters-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .meter-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #d1d5db;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .meter-btn:hover, .meter-btn.active-meter {
+            background: rgba(0, 245, 212, 0.1);
+            border-color: #00f5d4;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.1);
+        }
+        
+        /* Tongue twister box styling */
+        .twister-container {
+            background: #05070c;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+        .twister-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #8b9bb4;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .twister-text-box {
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4px;
+        }
+        #twisterText {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #fff;
+            margin: 0;
+            transition: opacity 0.15s ease;
+            line-height: 1.4;
         }
         
         /* Custom styles for checkboxes */
@@ -567,7 +633,7 @@
             <button class="preset-btn" data-bpm="110" data-time-sig="4" data-subdiv="1"><span class="bpm-val">110</span><span class="style-name">Trap</span></button>
             <button class="preset-btn" data-bpm="120" data-time-sig="4" data-subdiv="1"><span class="bpm-val">120</span><span class="style-name">House</span></button>
             <button class="preset-btn" data-bpm="140" data-time-sig="4" data-subdiv="1"><span class="bpm-val">140</span><span class="style-name">Drum&Bass</span></button>
-            <button class="preset-btn" data-bpm="130" data-time-sig="4" data-subdiv="1"><span class="bpm-val">130</span><span class="style-name">Speech Dict</span></button>
+            <button class="preset-btn" data-bpm="130" data-time-sig="4" data-subdiv="1" data-preset="speech"><span class="bpm-val">130</span><span class="style-name">Speech Dict</span></button>
             <button class="preset-btn" data-bpm="160" data-time-sig="4" data-subdiv="1"><span class="bpm-val">160</span><span class="style-name">Rap Fast</span></button>
             <button class="preset-btn" data-bpm="175" data-time-sig="4" data-subdiv="1"><span class="bpm-val">175</span><span class="style-name">Double Time</span></button>
             <button class="preset-btn" data-bpm="200" data-time-sig="4" data-subdiv="2"><span class="bpm-val">200</span><span class="style-name">Speed Rap</span></button>
@@ -680,6 +746,47 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Speech Diction Trainer Card (Full width span) -->
+            <div class="trainer-card" id="dictionTrainerCard" style="grid-column: span 2;">
+                <div class="trainer-header" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                    <div class="ui toggle checkbox cyber-toggle">
+                        <input type="checkbox" id="dictionTrainerToggle">
+                        <label for="dictionTrainerToggle" class="trainer-title" data-i18n="dictionTrainerTitle">Речевой тренажер</label>
+                    </div>
+                    <div id="meterDescription" style="font-size:0.82em; font-weight:700; color:#00f5d4; text-transform:uppercase; letter-spacing:0.5px;"></div>
+                </div>
+                <div class="trainer-body disabled-body" id="dictionTrainerBody">
+                    <!-- Poetic Meters Group -->
+                    <div style="margin-bottom: 16px;">
+                        <label style="color:#6b7280; font-size:0.7em; font-weight:700; text-transform:uppercase; display:block; margin-bottom:8px;" data-i18n="dictionMeterLabel">Поэтические размеры</label>
+                        <div class="meters-btn-group">
+                            <button class="meter-btn" data-meter="trochee" data-i18n="dictionMeterTrochee">Хорей</button>
+                            <button class="meter-btn" data-meter="iamb" data-i18n="dictionMeterIamb">Ямб</button>
+                            <button class="meter-btn" data-meter="dactyl" data-i18n="dictionMeterDactyl">Дактиль</button>
+                            <button class="meter-btn" data-meter="amphibrach" data-i18n="dictionMeterAmphibrach">Амфибрахий</button>
+                            <button class="meter-btn" data-meter="anapest" data-i18n="dictionMeterAnapest">Анапест</button>
+                        </div>
+                    </div>
+
+                    <!-- Tongue Twister Area -->
+                    <div class="twister-container">
+                        <div class="twister-header-row">
+                            <span data-i18n="dictionTwisterLabel">Скороговорка</span>
+                            <div style="display:flex; gap:12px; align-items:center;">
+                                <div class="ui checkbox cyber-checkbox" style="margin:0;">
+                                    <input type="checkbox" id="dictionAutoRotateToggle">
+                                    <label for="dictionAutoRotateToggle" data-i18n="dictionAutoRotate">Автосмена</label>
+                                </div>
+                                <input type="number" id="dictionIntervalInput" value="8" min="1" max="64" style="width:50px; background:#05070c; border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:6px; text-align:center; padding:3px; font-weight:700; font-size:0.9em;">
+                            </div>
+                        </div>
+                        <div class="twister-text-box">
+                            <p id="twisterText">Шла Саша по шоссе и сосала сушку.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="beat-circle-container" id="beatCircles"></div>
@@ -712,6 +819,9 @@
     let soundType = 'classic';
     let isPlaying = false;
     
+    // Beat Accent States: 2 = Accent, 1 = Normal, 0 = Mute
+    const beatStates = [2, 1, 1, 1];
+    
     // Scheduler variables
     let currentTick = 0;
     let nextNoteTime = 0.0;
@@ -738,12 +848,19 @@
     let gapClickPlayBars = 2;
     let gapClickMuteBars = 2;
     let gapClickHideVisuals = false;
+
+    // Diction Trainer state
+    let dictionTrainerActive = false;
+    let dictionAutoRotateActive = false;
+    let dictionAutoRotateInterval = 8; // bars
+    let currentTwisterIndex = 0;
     
     // Smooth rendering trackers
     let activeBeatStartTime = 0;
     let activeBeatDuration = 0;
     let currentActiveBeatIndex = -1;
     let uiBpmToUpdate = null;
+    let uiTwisterChangePending = false;
 
     // UI Cache
     const $bpmDisplay = document.getElementById('bpmDisplay');
@@ -778,6 +895,13 @@
     const $gapClickBody = document.getElementById('gapClickBody');
     const $gapClickCard = $gapClickToggle.closest('.trainer-card');
 
+    const $dictionTrainerToggle = document.getElementById('dictionTrainerToggle');
+    const $dictionTrainerBody = document.getElementById('dictionTrainerBody');
+    const $dictionTrainerCard = document.getElementById('dictionTrainerCard');
+    const $dictionAutoRotateToggle = document.getElementById('dictionAutoRotateToggle');
+    const $dictionIntervalInput = document.getElementById('dictionIntervalInput');
+    const $twisterText = document.getElementById('twisterText');
+
     const i18n = {
         ru: {
             title: 'Metronome Pro',
@@ -811,7 +935,16 @@
             gapClickTitle: 'Ритм-кипер (Gap Click)',
             gapClickPlay: 'Звук (тактов)',
             gapClickMute: 'Тишина (тактов)',
-            gapClickHideVisuals: 'Скрывать вспышки'
+            gapClickHideVisuals: 'Скрывать вспышки',
+            dictionTrainerTitle: 'Речевой тренажер',
+            dictionTwisterLabel: 'Скороговорка',
+            dictionAutoRotate: 'Автосмена',
+            dictionMeterLabel: 'Поэтические размеры',
+            dictionMeterTrochee: 'Хорей',
+            dictionMeterIamb: 'Ямб',
+            dictionMeterDactyl: 'Дактиль',
+            dictionMeterAmphibrach: 'Амфибрахий',
+            dictionMeterAnapest: 'Анапест'
         },
         en: {
             title: 'Metronome Pro',
@@ -845,8 +978,46 @@
             gapClickTitle: 'Gap Click (Rhythm)',
             gapClickPlay: 'Play (bars)',
             gapClickMute: 'Mute (bars)',
-            gapClickHideVisuals: 'Hide Visuals'
+            gapClickHideVisuals: 'Hide Visuals',
+            dictionTrainerTitle: 'Speech Diction Trainer',
+            dictionTwisterLabel: 'Tongue Twister',
+            dictionAutoRotate: 'Auto-rotate',
+            dictionMeterLabel: 'Poetic Meters',
+            dictionMeterTrochee: 'Trochee',
+            dictionMeterIamb: 'Iamb',
+            dictionMeterDactyl: 'Dactyl',
+            dictionMeterAmphibrach: 'Amphibrach',
+            dictionMeterAnapest: 'Anapest'
         }
+    };
+
+    const poeticMeters = {
+        trochee: { timeSig: 2, states: [2, 1], desc: 'Хорей: ударный первый (ТА-та)', descEn: 'Trochee: stressed first (DA-dum)' },
+        iamb: { timeSig: 2, states: [1, 2], desc: 'Ямб: ударный второй (та-ТА)', descEn: 'Iamb: stressed second (dum-DA)' },
+        dactyl: { timeSig: 3, states: [2, 1, 1], desc: 'Дактиль: ударный первый (ТА-та-та)', descEn: 'Dactyl: stressed first (DA-dum-dum)' },
+        amphibrach: { timeSig: 3, states: [1, 2, 1], desc: 'Амфибрахий: ударный второй (та-ТА-та)', descEn: 'Amphibrach: stressed second (dum-DA-dum)' },
+        anapest: { timeSig: 3, states: [1, 1, 2], desc: 'Анапест: ударный третий (та-та-ТА)', descEn: 'Anapest: stressed third (dum-dum-DA)' }
+    };
+
+    const twisters = {
+        ru: [
+            "Шла Саша по шоссе и сосала сушку.",
+            "Карл у Клары украл кораллы, Клара у Карла украла кларнет.",
+            "Корабли лавировали, лавировали, да не вылавировали.",
+            "Бык тупогуб, тупогубенький бычок, у быка бела губа была тупа.",
+            "Расскажите про покупки! Про покупки, про покупочки свои.",
+            "Кукушка кукушонку купила капюшон. Как в капюшоне он смешон!",
+            "На дворе трава, на траве дрова, не руби дрова на дворе травы."
+        ],
+        en: [
+            "Peter Piper picked a peck of pickled peppers.",
+            "She sells seashells by the seashore.",
+            "How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+            "Red larry, yellow larry, red larry, yellow larry.",
+            "Unique New York, you know you need unique New York.",
+            "Three free throws. Three free throws. Three free throws.",
+            "Betty Botter bought some butter, but she said the butter's bitter."
+        ]
     };
 
     let currentLang = localStorage.getItem('metronome-lang') || 'ru';
@@ -864,6 +1035,10 @@
         }
         document.documentElement.lang = currentLang;
         localStorage.setItem('metronome-lang', currentLang);
+
+        if (dictionTrainerActive) {
+            $twisterText.textContent = twisters[currentLang][currentTwisterIndex];
+        }
     }
 
     function ensureAudioCtx() {
@@ -1088,7 +1263,6 @@
         const ticksPerBeat = subdivision;
         const isMainBeat = (tickIndex % ticksPerBeat === 0);
         const beatIndex = Math.floor(tickIndex / ticksPerBeat) % timeSignature;
-        const isAccent = (beatIndex === 0) && isMainBeat;
 
         // Process Bar progression (evaluated at the start of a bar)
         const ticksPerBar = timeSignature * subdivision;
@@ -1103,6 +1277,13 @@
                         currentBpm = nextBpm;
                         uiBpmToUpdate = nextBpm; // Thread-safe UI update
                     }
+                }
+            }
+
+            // Diction Trainer Auto-rotate
+            if (dictionTrainerActive && dictionAutoRotateActive) {
+                if (barsCount % dictionAutoRotateInterval === 0) {
+                    uiTwisterChangePending = true;
                 }
             }
         }
@@ -1122,10 +1303,16 @@
             }
         }
 
-        // Play Sound
+        // Play Sound (incorporating custom beat states)
         if (!isMuted) {
             if (isMainBeat) {
-                playClick(time, isAccent);
+                const beatState = beatStates[beatIndex] !== undefined ? beatStates[beatIndex] : 1;
+                if (beatState === 2) {
+                    playClick(time, true); // Accent
+                } else if (beatState === 1) {
+                    playClick(time, false); // Normal
+                }
+                // If beatState === 0, keep silent
             } else {
                 playSubdivisionClick(time);
             }
@@ -1137,7 +1324,7 @@
             tickIndex: tickIndex,
             beatIndex: beatIndex,
             isMainBeat: isMainBeat,
-            isAccent: isAccent,
+            beatState: isMainBeat ? (beatStates[beatIndex] !== undefined ? beatStates[beatIndex] : 1) : 0,
             bpm: currentBpm,
             hideVisuals: hideVisualsForGap,
             barIndex: currentBarIndex,
@@ -1187,6 +1374,12 @@
             uiBpmToUpdate = null;
         }
 
+        // Process dynamic tongue twister rotation
+        if (uiTwisterChangePending) {
+            changeTongueTwister();
+            uiTwisterChangePending = false;
+        }
+
         requestAnimationFrame(animationLoop);
     }
 
@@ -1208,16 +1401,18 @@
         if (event.isMainBeat) {
             updateBeatCircles(event.beatIndex);
             
-            // Pulse the background ring
+            // Pulse the background ring based on the beat's actual state
             const dialBg = document.querySelector('.dial-bg');
-            if (event.isAccent) {
+            if (event.beatState === 2) {
+                // Accent Flash (Pink)
                 dialBg.style.stroke = event.isMuted ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 46, 147, 0.25)';
                 dialBg.style.strokeWidth = '8';
                 setTimeout(() => {
                     dialBg.style.stroke = '';
                     dialBg.style.strokeWidth = '';
                 }, 80);
-            } else {
+            } else if (event.beatState === 1) {
+                // Normal Flash (Teal)
                 dialBg.style.stroke = event.isMuted ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 245, 212, 0.15)';
                 dialBg.style.strokeWidth = '7';
                 setTimeout(() => {
@@ -1265,24 +1460,58 @@
             line.setAttribute('x2', x2);
             line.setAttribute('y2', y2);
             
-            if (i === 0) {
+            const state = beatStates[i] !== undefined ? beatStates[i] : 1;
+            if (state === 2) {
                 line.setAttribute('stroke', '#ff2e93');
                 line.setAttribute('stroke-width', '4');
-            } else {
+            } else if (state === 1) {
                 line.setAttribute('stroke', '#00f5d4');
                 line.setAttribute('stroke-width', '2');
                 line.setAttribute('opacity', '0.5');
+            } else {
+                line.setAttribute('stroke', 'rgba(255, 255, 255, 0.15)');
+                line.setAttribute('stroke-width', '1.5');
+                line.setAttribute('stroke-dasharray', '2, 2');
             }
             $ticks.appendChild(line);
         }
     }
 
+    function renderCircleStates() {
+        const circles = document.querySelectorAll('.beat-circle');
+        circles.forEach((c, i) => {
+            const state = beatStates[i] !== undefined ? beatStates[i] : 1;
+            c.className = 'beat-circle';
+            c.textContent = i + 1;
+            
+            if (state === 2) {
+                c.style.borderColor = '#ff2e93';
+                c.style.color = '#ff2e93';
+                c.style.borderStyle = 'solid';
+            } else if (state === 1) {
+                c.style.borderColor = '#00f5d4';
+                c.style.color = '#00f5d4';
+                c.style.borderStyle = 'solid';
+            } else {
+                c.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                c.style.color = '#4b5563';
+                c.style.borderStyle = 'dashed';
+            }
+        });
+    }
+
     function updateBeatCircles(activeIndex) {
         const circles = document.querySelectorAll('.beat-circle');
         circles.forEach((c, i) => {
-            c.classList.remove('active');
+            c.classList.remove('active-accent', 'active-normal');
+            
             if (i === activeIndex) {
-                c.classList.add('active');
+                const state = beatStates[i] !== undefined ? beatStates[i] : 1;
+                if (state === 2) {
+                    c.classList.add('active-accent');
+                } else if (state === 1) {
+                    c.classList.add('active-normal');
+                }
             }
         });
     }
@@ -1292,11 +1521,64 @@
         for (let i = 0; i < Math.min(timeSignature, 8); i++) {
             const div = document.createElement('div');
             div.className = 'beat-circle';
-            if (i === 0) div.classList.add('accent');
-            div.textContent = i + 1;
+            div.dataset.index = i;
+            
+            // Cycle beat accent levels on click: 1 (Normal) -> 2 (Accent) -> 0 (Mute) -> 1
+            div.addEventListener('click', function() {
+                ensureAudioCtx();
+                const idx = parseInt(this.dataset.index, 10);
+                const currentState = beatStates[idx] !== undefined ? beatStates[idx] : 1;
+                let nextState = 1;
+                if (currentState === 1) nextState = 2;
+                else if (currentState === 2) nextState = 0;
+                else nextState = 1;
+                
+                beatStates[idx] = nextState;
+                renderCircleStates();
+                buildDialTicks(); // update tick marks to match accent configuration
+            });
+            
             $beatCircles.appendChild(div);
         }
-        updateBeatCircles(-1);
+        renderCircleStates();
+    }
+
+    function resetBeatStates() {
+        beatStates.length = 0;
+        for (let i = 0; i < timeSignature; i++) {
+            beatStates[i] = (i === 0) ? 2 : 1;
+        }
+    }
+
+    function selectPoeticMeter(key) {
+        const meter = poeticMeters[key];
+        if (!meter) return;
+        
+        timeSignature = meter.timeSig;
+        $timeSigSelect.value = meter.timeSig;
+        
+        // Setup shifted accents
+        beatStates.length = 0;
+        for (let i = 0; i < timeSignature; i++) {
+            beatStates[i] = meter.states[i] || 1;
+        }
+        
+        buildBeatCircles();
+        buildDialTicks();
+        
+        const descText = currentLang === 'ru' ? meter.desc : meter.descEn;
+        document.getElementById('meterDescription').textContent = descText;
+    }
+
+    function changeTongueTwister() {
+        const list = twisters[currentLang];
+        currentTwisterIndex = (currentTwisterIndex + 1) % list.length;
+        
+        $twisterText.style.opacity = '0';
+        setTimeout(() => {
+            $twisterText.textContent = list[currentTwisterIndex];
+            $twisterText.style.opacity = '1';
+        }, 150);
     }
 
     function startMetronome() {
@@ -1362,6 +1644,7 @@
 
     $timeSigSelect.addEventListener('change', function() {
         timeSignature = parseInt(this.value, 10);
+        resetBeatStates();
         buildBeatCircles();
         buildDialTicks();
     });
@@ -1467,12 +1750,19 @@
             if (timeSig) {
                 timeSignature = parseInt(timeSig, 10);
                 $timeSigSelect.value = timeSig;
+                resetBeatStates();
                 buildBeatCircles();
                 buildDialTicks();
             }
             if (subdiv) {
                 subdivision = parseInt(subdiv, 10);
                 $subdivisionSelect.value = subdiv;
+            }
+
+            // Sync with Speech Diction panel if preset is speech
+            if (this.dataset.preset === 'speech') {
+                $dictionTrainerToggle.checked = true;
+                $dictionTrainerToggle.dispatchEvent(new Event('change'));
             }
         });
     });
@@ -1529,6 +1819,43 @@
         gapClickHideVisuals = this.checked;
     });
 
+    // --- Speech Diction Trainer Inputs ---
+    $dictionTrainerToggle.addEventListener('change', function() {
+        dictionTrainerActive = this.checked;
+        if (dictionTrainerActive) {
+            $dictionTrainerBody.classList.remove('disabled-body');
+            $dictionTrainerCard.classList.add('active-card');
+            
+            // Set initial tongue twister
+            $twisterText.textContent = twisters[currentLang][currentTwisterIndex];
+        } else {
+            $dictionTrainerBody.classList.add('disabled-body');
+            $dictionTrainerCard.classList.remove('active-card');
+            document.getElementById('meterDescription').textContent = '';
+            document.querySelectorAll('.meter-btn').forEach(b => b.classList.remove('active-meter'));
+        }
+    });
+
+    $dictionAutoRotateToggle.addEventListener('change', function() {
+        dictionAutoRotateActive = this.checked;
+    });
+
+    $dictionIntervalInput.addEventListener('change', function() {
+        dictionAutoRotateInterval = Math.max(1, parseInt(this.value, 10) || 8);
+    });
+
+    document.querySelectorAll('.meter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            ensureAudioCtx();
+            const meterKey = this.dataset.meter;
+            
+            document.querySelectorAll('.meter-btn').forEach(b => b.classList.remove('active-meter'));
+            this.classList.add('active-meter');
+            
+            selectPoeticMeter(meterKey);
+        });
+    });
+
     // --- Keyboard Shortcuts ---
     document.addEventListener('keydown', function(e) {
         // Exclude typing events inside form fields
@@ -1553,6 +1880,7 @@
     });
 
     // Initialize
+    resetBeatStates();
     buildBeatCircles();
     buildDialTicks();
     setBpm(120);
