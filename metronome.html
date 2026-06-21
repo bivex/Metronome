@@ -1322,6 +1322,7 @@
         localStorage.setItem('metronome-lang', currentLang);
 
         if (dictionTrainerActive) {
+            currentTwisterIndex = currentTwisterIndex % twisters[currentLang].length;
             $twisterText.textContent = twisters[currentLang][currentTwisterIndex];
         }
 
@@ -2423,6 +2424,7 @@
             $dictionTrainerCard.classList.add('active-card');
             
             // Set initial tongue twister
+            currentTwisterIndex = currentTwisterIndex % twisters[currentLang].length;
             $twisterText.textContent = twisters[currentLang][currentTwisterIndex];
             
             // disable reading trainer
