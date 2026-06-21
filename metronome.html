@@ -647,6 +647,60 @@
             font-family: inherit;
             font-size: 0.9em;
         }
+        
+        .discord-tip {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 24px;
+            background: rgba(88, 101, 242, 0.08);
+            border: 1px solid rgba(88, 101, 242, 0.35);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInTip 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+        }
+        @keyframes fadeInTip {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .discord-tip svg {
+            flex-shrink: 0;
+            color: #5865F2;
+            filter: drop-shadow(0 0 6px rgba(88, 101, 242, 0.5));
+            margin-top: 2px;
+        }
+        .discord-tip-content {
+            font-size: 0.88em;
+            line-height: 1.5;
+            color: #d1d5db;
+        }
+        .discord-tip-content strong {
+            color: #ffffff;
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.92em;
+            letter-spacing: 0.5px;
+        }
+        .discord-tip-steps {
+            margin: 8px 0 0 0;
+            padding-left: 18px;
+            color: #9ca3af;
+        }
+        .discord-tip-steps li {
+            margin-bottom: 6px;
+        }
+        .discord-tip-steps li strong {
+            display: inline;
+            color: #00f5d4;
+            text-transform: none;
+            font-size: 1em;
+            letter-spacing: 0;
+        }
         @media (max-width: 480px) {
             .bpm-number { font-size: 3.8em; }
             .bpm-dial-container { width: 180px; height: 180px; }
@@ -743,6 +797,7 @@
                     <option value="cowbell" data-i18n="soundCowbell">Ковбелл 808</option>
                     <option value="drum" data-i18n="soundDrum">Бочка & Клик</option>
                     <option value="click" data-i18n="soundClick">Механика</option>
+                    <option value="discord" data-i18n="soundDiscord">Дискорд (Голос)</option>
                 </select>
             </div>
             <div class="setting-col">
@@ -758,6 +813,24 @@
             <label for="volumeSlider" data-i18n="volume">Громкость</label>
             <input type="range" class="native-slider" id="volumeSlider" min="0" max="100" value="80" step="1">
             <span id="volumeLabel">80%</span>
+        </div>
+
+        <!-- Discord Transmission Tip Card -->
+        <div id="discordTip" class="discord-tip" style="display: none;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div class="discord-tip-content">
+                <strong data-i18n="discordTipTitle">Рекомендация для Discord:</strong>
+                <span data-i18n="discordTipDesc">Чтобы голос и клики передавались без задержек и пропаданий в голосовых каналах:</span>
+                <ul class="discord-tip-steps">
+                    <li><span data-i18n="discordTipStep1">В пресете <strong>«Дискорд (Голос)»</strong> используется мягкая атака и форманты гласных, имитирующие голос.</span></li>
+                    <li><span data-i18n="discordTipStep2">В настройках Discord <strong>«Голос и видео»</strong> отключите <strong>«Шумоподавление (Krisp)»</strong>.</span></li>
+                    <li><span data-i18n="discordTipStep3">Там же отключите <strong>«Эхоподавление»</strong> и <strong>«Автоматическую регулировку усиления»</strong>.</span></li>
+                </ul>
+            </div>
         </div>
 
         <!-- Advanced Trainer Modes -->
@@ -1040,6 +1113,7 @@
     const $soundTypeSelect = document.getElementById('soundTypeSelect');
     const $langSelect = document.getElementById('langSelect');
     const $dialProgress = document.getElementById('dialProgress');
+    const $discordTip = document.getElementById('discordTip');
     const totalCircumference = 565.48; // 2 * PI * r (r=90)
 
     // Trainer DOM references
@@ -1097,6 +1171,12 @@
             soundCowbell: 'Ковбелл 808',
             soundDrum: 'Бочка & Клик',
             soundClick: 'Механика',
+            soundDiscord: 'Дискорд (Голос)',
+            discordTipTitle: 'Рекомендация для Discord:',
+            discordTipDesc: 'Чтобы голос и клики передавались без задержек и пропаданий в голосовых каналах:',
+            discordTipStep1: 'В пресете <strong>«Дискорд (Голос)»</strong> используется мягкая атака и форманты гласных, имитирующие голос.',
+            discordTipStep2: 'В настройках Discord <strong>«Голос и видео»</strong> отключите <strong>«Шумоподавление (Krisp)»</strong>.',
+            discordTipStep3: 'Там же отключите <strong>«Эхоподавление»</strong> и <strong>«Автоматическую регулировку усиления»</strong>.',
             labelTimeSig: 'Размер',
             labelSubdivision: 'Дробление',
             labelSound: 'Звук',
@@ -1147,6 +1227,12 @@
             soundCowbell: '808 Cowbell',
             soundDrum: 'Kick & Click',
             soundClick: 'Mechanical',
+            soundDiscord: 'Discord (Voice)',
+            discordTipTitle: 'Discord Recommendation:',
+            discordTipDesc: 'To ensure your voice and metronome clicks transmit without gating or dropouts in voice channels:',
+            discordTipStep1: 'The <strong>"Discord (Voice)"</strong> preset uses human-like vocal formants and a soft attack to mimic speech.',
+            discordTipStep2: 'In Discord <strong>"Voice & Video"</strong> settings, disable <strong>"Noise Suppression (Krisp)"</strong>.',
+            discordTipStep3: 'Also disable <strong>"Echo Cancellation"</strong> and <strong>"Automatic Gain Control"</strong>.',
             labelTimeSig: 'Time Sig',
             labelSubdivision: 'Subdivision',
             labelSound: 'Sound',
@@ -1481,6 +1567,78 @@
         playNoise(time, 0.012, isAccent ? 0.8 : 0.4, 3000);
     }
 
+    // --- Discord-optimized Vocal Formant Synthesizer ---
+    // Emulates human vowel formants to bypass Discord's voice-activated noise suppression (Krisp)
+    function playVocalFormant(time, vowel, pitch, gainMult = 1.0) {
+        if (!audioCtx || !masterGainNode) return;
+        
+        let f1, f2, f3;
+        let db1 = 0, db2 = -6, db3 = -18;
+        
+        if (vowel === 'ah') {
+            f1 = 730; f2 = 1090; f3 = 2440; // vowel "Ah" formants
+        } else if (vowel === 'oh') {
+            f1 = 570; f2 = 840; f3 = 2410;  // vowel "Oh" formants
+        } else { // 'ee'
+            f1 = 270; f2 = 2290; f3 = 3010; // vowel "Ee" formants
+        }
+        
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sawtooth'; // rich overtone spectrum necessary for filters
+        osc.frequency.setValueAtTime(pitch, time);
+        
+        // Three parallel resonant bandpass filters modeling the human vocal tract
+        const filter1 = audioCtx.createBiquadFilter();
+        filter1.type = 'bandpass';
+        filter1.frequency.setValueAtTime(f1, time);
+        filter1.Q.setValueAtTime(10, time);
+        
+        const filter2 = audioCtx.createBiquadFilter();
+        filter2.type = 'bandpass';
+        filter2.frequency.setValueAtTime(f2, time);
+        filter2.Q.setValueAtTime(10, time);
+        
+        const filter3 = audioCtx.createBiquadFilter();
+        filter3.type = 'bandpass';
+        filter3.frequency.setValueAtTime(f3, time);
+        filter3.Q.setValueAtTime(8, time);
+        
+        const g1 = audioCtx.createGain();
+        const g2 = audioCtx.createGain();
+        const g3 = audioCtx.createGain();
+        
+        g1.gain.setValueAtTime(Math.pow(10, db1/20) * 0.4, time);
+        g2.gain.setValueAtTime(Math.pow(10, db2/20) * 0.4, time);
+        g3.gain.setValueAtTime(Math.pow(10, db3/20) * 0.4, time);
+        
+        const mixGain = audioCtx.createGain();
+        mixGain.gain.setValueAtTime(0, time);
+        
+        // Slower vocal attack curve (8-15ms) prevents Discord from classifying clicks as transient noise hits
+        const attack = vowel === 'ee' ? 0.008 : 0.015;
+        const decay = vowel === 'ee' ? 0.05 : 0.12;
+        
+        mixGain.gain.linearRampToValueAtTime(0.8 * gainMult, time + attack);
+        mixGain.gain.exponentialRampToValueAtTime(0.0001, time + attack + decay);
+        
+        osc.connect(filter1);
+        osc.connect(filter2);
+        osc.connect(filter3);
+        
+        filter1.connect(g1);
+        filter2.connect(g2);
+        filter3.connect(g3);
+        
+        g1.connect(mixGain);
+        g2.connect(mixGain);
+        g3.connect(mixGain);
+        
+        mixGain.connect(masterGainNode);
+        
+        osc.start(time);
+        osc.stop(time + attack + decay + 0.02);
+    }
+
     function playSubdivisionClick(time) {
         if (!audioCtx || !masterGainNode) return;
         
@@ -1518,6 +1676,10 @@
                 // Tiny metallic tick
                 playNoise(time, 0.012, 0.1, 7000);
                 break;
+            case 'discord':
+                // Small vocal formant tick (Vowel "ee" at 260Hz) to prevent Discord gating
+                playVocalFormant(time, 'ee', 260, 0.25);
+                break;
             case 'electronic':
             case 'drum':
             case 'click':
@@ -1547,6 +1709,10 @@
                 break;
             case 'click':
                 playMechanicalClick(time, isAccent);
+                break;
+            case 'discord':
+                // Accent plays "Ah" (220Hz), regular plays "Oh" (165Hz)
+                playVocalFormant(time, isAccent ? 'ah' : 'oh', isAccent ? 220 : 165, 1.0);
                 break;
             default:
                 playClassicClick(time, isAccent, 0.8);
@@ -2069,6 +2235,11 @@
 
     $soundTypeSelect.addEventListener('change', function() {
         soundType = this.value;
+        if (soundType === 'discord') {
+            $discordTip.style.display = 'flex';
+        } else {
+            $discordTip.style.display = 'none';
+        }
     });
 
     $langSelect.addEventListener('change', function() {
@@ -2368,6 +2539,13 @@
     buildDialTicks();
     setBpm(120);
     applyI18n();
+
+    // Check if initial soundType is discord
+    if ($soundTypeSelect.value === 'discord') {
+        $discordTip.style.display = 'flex';
+    } else {
+        $discordTip.style.display = 'none';
+    }
     
     // Start precision visual loops
     requestAnimationFrame(animationLoop);
