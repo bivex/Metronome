@@ -742,7 +742,7 @@
                     <option value="wood" data-i18n="soundWood">Дерево</option>
                     <option value="cowbell" data-i18n="soundCowbell">Ковбелл 808</option>
                     <option value="drum" data-i18n="soundDrum">Бочка & Клик</option>
-                    <option value="click" data-i18n="soundClick">Шумовой клик</option>
+                    <option value="click" data-i18n="soundClick">Механика</option>
                 </select>
             </div>
             <div class="setting-col">
@@ -966,6 +966,10 @@
     // Beat Accent States: 2 = Accent, 1 = Normal, 0 = Mute
     const beatStates = [2, 1, 1, 1];
     
+    // Audio Bus structure
+    let masterGainNode = null;
+    let masterCompressor = null;
+    
     // Scheduler variables
     let currentTick = 0;
     let nextNoteTime = 0.0;
@@ -1092,7 +1096,7 @@
             soundWood: 'Дерево',
             soundCowbell: 'Ковбелл 808',
             soundDrum: 'Бочка & Клик',
-            soundClick: 'Шумовой клик',
+            soundClick: 'Механика',
             labelTimeSig: 'Размер',
             labelSubdivision: 'Дробление',
             labelSound: 'Звук',
@@ -1142,7 +1146,7 @@
             soundWood: 'Woodblock',
             soundCowbell: '808 Cowbell',
             soundDrum: 'Kick & Click',
-            soundClick: 'Noise Click',
+            soundClick: 'Mechanical',
             labelTimeSig: 'Time Sig',
             labelSubdivision: 'Subdivision',
             labelSound: 'Sound',
@@ -1209,8 +1213,6 @@
         en: "Speed reading is any of several techniques used to improve one's ability to read quickly.\nIt involves methods like chunking, minimizing subvocalization, and pacing eye movements.\nReading under the rhythmic guide of a metronome trains the eyes to sweep smoothly across the lines without regressing.\nEvery tick represents a fixation point or a signal to transition to the next line.\nPaste your own articles or books here to practice rhythm-based scanning!"
     };
 
-    let currentLang = localStorage.getItem('metronome-lang') || 'ru';
-
     function applyI18n() {
         const t = i18n[currentLang];
         document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -1254,12 +1256,32 @@
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
+        initMasterBus();
     }
 
-    // --- Sound Synthesis Engines (Professional grade) ---
+    function initMasterBus() {
+        if (!audioCtx || masterGainNode) return;
+        
+        // Master Gain Node for volume control without envelope clicks
+        masterGainNode = audioCtx.createGain();
+        masterGainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+        
+        // Master Dynamics Limiter Node to prevent digital clipping/distortion
+        masterCompressor = audioCtx.createDynamicsCompressor();
+        masterCompressor.threshold.setValueAtTime(-12, audioCtx.currentTime);
+        masterCompressor.knee.setValueAtTime(4, audioCtx.currentTime);
+        masterCompressor.ratio.setValueAtTime(12, audioCtx.currentTime);
+        masterCompressor.attack.setValueAtTime(0.002, audioCtx.currentTime); // instantaneous compression
+        masterCompressor.release.setValueAtTime(0.04, audioCtx.currentTime); // quick recovery
+        
+        masterGainNode.connect(masterCompressor);
+        masterCompressor.connect(audioCtx.destination);
+    }
+
+    // --- Sound Synthesis Engines (Professional grade DSP) ---
 
     function playNoise(time, duration, vol, filterFreq = 800) {
-        if (!audioCtx) return;
+        if (!audioCtx || !masterGainNode) return;
         const bufferSize = Math.floor(audioCtx.sampleRate * duration);
         const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -1274,9 +1296,9 @@
         filter.frequency.setValueAtTime(filterFreq, time);
         noise.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(masterGainNode);
         gain.gain.setValueAtTime(0, time);
-        gain.gain.linearRampToValueAtTime(vol * volume, time + 0.001);
+        gain.gain.linearRampToValueAtTime(vol, time + 0.001);
         gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
         noise.start(time);
         noise.stop(time + duration + 0.01);
@@ -1286,7 +1308,7 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(masterGainNode);
         
         osc.type = 'sine';
         osc.frequency.setValueAtTime(isAccent ? 1200 : 800, time);
@@ -1302,7 +1324,7 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(masterGainNode);
         
         osc.type = 'square';
         osc.frequency.setValueAtTime(isAccent ? 980 : 490, time);
@@ -1317,66 +1339,94 @@
         osc.stop(time + 0.04);
     }
 
-    function playWoodClick(time, isAccent, vol) {
-        // Wooden percussion simulation using multi-frequency additive oscillators with fast decays
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
+    function playWoodClick(time, isAccent) {
+        // Physical modeling of woodblock resonance: fundamental + 2 non-harmonic overtones
+        const osc1 = audioCtx.createOscillator(); // f0
+        const osc2 = audioCtx.createOscillator(); // f1
+        const osc3 = audioCtx.createOscillator(); // f2
         const gain1 = audioCtx.createGain();
         const gain2 = audioCtx.createGain();
+        const gain3 = audioCtx.createGain();
+        
+        const f0 = isAccent ? 880 : 587; // A5 or D5
         
         osc1.type = 'triangle';
-        osc1.frequency.setValueAtTime(isAccent ? 900 : 600, time);
-        osc1.frequency.exponentialRampToValueAtTime(isAccent ? 600 : 400, time + 0.03); // rapid pitch slide
+        osc1.frequency.setValueAtTime(f0, time);
+        // rapid pitch slide simulating mallet strike pressure
+        osc1.frequency.exponentialRampToValueAtTime(f0 * 0.8, time + 0.03);
         
         osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(isAccent ? 1440 : 960, time);
-        osc2.frequency.exponentialRampToValueAtTime(isAccent ? 1100 : 720, time + 0.02);
+        osc2.frequency.setValueAtTime(f0 * 1.69, time); // f1 overtone
+        osc2.frequency.exponentialRampToValueAtTime(f0 * 1.69 * 0.85, time + 0.02);
         
+        osc3.type = 'sine';
+        osc3.frequency.setValueAtTime(f0 * 2.62, time); // f2 overtone
+        osc3.frequency.exponentialRampToValueAtTime(f0 * 2.62 * 0.9, time + 0.015);
+        
+        // Volume envelopes (higher frequencies decay faster)
         gain1.gain.setValueAtTime(0, time);
-        gain1.gain.linearRampToValueAtTime(vol * (isAccent ? 0.75 : 0.45), time + 0.001);
-        gain1.gain.exponentialRampToValueAtTime(0.0001, time + 0.045);
+        gain1.gain.linearRampToValueAtTime(0.7, time + 0.001);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
         
         gain2.gain.setValueAtTime(0, time);
-        gain2.gain.linearRampToValueAtTime(vol * (isAccent ? 0.25 : 0.15), time + 0.001);
-        gain2.gain.exponentialRampToValueAtTime(0.0001, time + 0.02);
+        gain2.gain.linearRampToValueAtTime(0.2, time + 0.001);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, time + 0.03);
+        
+        gain3.gain.setValueAtTime(0, time);
+        gain3.gain.linearRampToValueAtTime(0.1, time + 0.001);
+        gain3.gain.exponentialRampToValueAtTime(0.0001, time + 0.015);
         
         osc1.connect(gain1);
         osc2.connect(gain2);
+        osc3.connect(gain3);
         
-        gain1.connect(audioCtx.destination);
-        gain2.connect(audioCtx.destination);
+        gain1.connect(masterGainNode);
+        gain2.connect(masterGainNode);
+        gain3.connect(masterGainNode);
         
         osc1.start(time);
         osc2.start(time);
-        osc1.stop(time + 0.05);
-        osc2.stop(time + 0.05);
+        osc3.start(time);
+        
+        osc1.stop(time + 0.07);
+        osc2.stop(time + 0.04);
+        osc3.stop(time + 0.02);
+        
+        // Mallet strike noise pop
+        playNoise(time, 0.005, 0.3, 2200);
     }
 
     function playCowbell(time, isAccent, vol) {
-        // Classic 808 cowbell detune modeling
+        // TR-808 cowbell frequencies: 540Hz and 800Hz
         const osc1 = audioCtx.createOscillator();
         const osc2 = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        const filter = audioCtx.createBiquadFilter();
+        const bandpass = audioCtx.createBiquadFilter();
+        const highpass = audioCtx.createBiquadFilter();
         
+        const scale = isAccent ? 1.1 : 1.0;
         osc1.type = 'square';
-        osc1.frequency.setValueAtTime(isAccent ? 587 : 540, time);
+        osc1.frequency.setValueAtTime(540 * scale, time);
         
         osc2.type = 'square';
-        osc2.frequency.setValueAtTime(isAccent ? 880 : 800, time);
+        osc2.frequency.setValueAtTime(800 * scale, time);
         
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(isAccent ? 850 : 800, time);
-        filter.Q.setValueAtTime(1.5, time);
+        bandpass.type = 'bandpass';
+        bandpass.frequency.setValueAtTime(800 * scale, time);
+        bandpass.Q.setValueAtTime(2.0, time);
+        
+        highpass.type = 'highpass';
+        highpass.frequency.setValueAtTime(500 * scale, time);
         
         gain.gain.setValueAtTime(0, time);
         gain.gain.linearRampToValueAtTime(vol * (isAccent ? 0.8 : 0.5), time + 0.002);
         gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.12);
         
-        osc1.connect(filter);
-        osc2.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        osc1.connect(bandpass);
+        osc2.connect(bandpass);
+        bandpass.connect(highpass);
+        highpass.connect(gain);
+        gain.connect(masterGainNode);
         
         osc1.start(time);
         osc2.start(time);
@@ -1390,66 +1440,116 @@
         const gain = audioCtx.createGain();
         
         osc.type = 'sine';
-        const startFreq = isAccent ? 140 : 100;
+        const startFreq = isAccent ? 150 : 110;
         const endFreq = 42;
         osc.frequency.setValueAtTime(startFreq, time);
         osc.frequency.exponentialRampToValueAtTime(endFreq, time + 0.07);
         
         gain.gain.setValueAtTime(0, time);
-        gain.gain.linearRampToValueAtTime(vol * (isAccent ? 1.0 : 0.65), time + 0.002);
+        gain.gain.linearRampToValueAtTime(vol, time + 0.002);
         gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.16);
         
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(masterGainNode);
         
         osc.start(time);
         osc.stop(time + 0.17);
         
         // sharp click pop
-        playNoise(time, 0.008, vol * (isAccent ? 0.25 : 0.15), 1200);
+        playNoise(time, 0.008, 0.25, 1200);
+    }
+
+    function playMechanicalClick(time, isAccent) {
+        // Wittner mechanical metronome physical emulation
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(isAccent ? 380 : 280, time);
+        
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.6, time + 0.002);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
+        
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        
+        osc.start(time);
+        osc.stop(time + 0.06);
+        
+        // sharp metallic spring release noise
+        playNoise(time, 0.012, isAccent ? 0.8 : 0.4, 3000);
     }
 
     function playSubdivisionClick(time) {
-        if (!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        if (!audioCtx || !masterGainNode) return;
         
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(1000, time);
-        gain.gain.setValueAtTime(0, time);
-        gain.gain.linearRampToValueAtTime(volume * 0.25, time + 0.001);
-        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.02);
-        
-        osc.start(time);
-        osc.stop(time + 0.025);
+        // Adapt subdivision tick sound signature depending on chosen main voice
+        switch (soundType) {
+            case 'classic':
+                // High pitch sine tick
+                const osc1 = audioCtx.createOscillator();
+                const gain1 = audioCtx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(1200, time);
+                gain1.gain.setValueAtTime(0, time);
+                gain1.gain.linearRampToValueAtTime(0.15, time + 0.001);
+                gain1.gain.exponentialRampToValueAtTime(0.0001, time + 0.015);
+                osc1.connect(gain1);
+                gain1.connect(masterGainNode);
+                osc1.start(time);
+                osc1.stop(time + 0.02);
+                break;
+            case 'wood':
+                // High pitch woody tick
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(1400, time);
+                gain2.gain.setValueAtTime(0, time);
+                gain2.gain.linearRampToValueAtTime(0.12, time + 0.001);
+                gain2.gain.exponentialRampToValueAtTime(0.0001, time + 0.012);
+                osc2.connect(gain2);
+                gain2.connect(masterGainNode);
+                osc2.start(time);
+                osc2.stop(time + 0.015);
+                break;
+            case 'cowbell':
+                // Tiny metallic tick
+                playNoise(time, 0.012, 0.1, 7000);
+                break;
+            case 'electronic':
+            case 'drum':
+            case 'click':
+            default:
+                // Shaker/Hihat tick
+                playNoise(time, 0.015, 0.1, 6000);
+        }
     }
 
     function playClick(time, isAccent) {
         if (!audioCtx) return;
-        const vol = volume;
         switch (soundType) {
             case 'classic':
-                playClassicClick(time, isAccent, vol);
+                playClassicClick(time, isAccent, 0.8);
                 break;
             case 'electronic':
-                playElectronicClick(time, isAccent, vol);
+                playElectronicClick(time, isAccent, 0.8);
                 break;
             case 'wood':
-                playWoodClick(time, isAccent, vol);
+                playWoodClick(time, isAccent);
                 break;
             case 'cowbell':
-                playCowbell(time, isAccent, vol);
+                playCowbell(time, isAccent, 0.8);
                 break;
             case 'drum':
-                playKick(time, isAccent, vol);
+                playKick(time, isAccent, 0.8);
                 break;
             case 'click':
-                playNoise(time, 0.02, vol * (isAccent ? 0.8 : 0.4), 1600);
+                playMechanicalClick(time, isAccent);
                 break;
             default:
-                playClassicClick(time, isAccent, vol);
+                playClassicClick(time, isAccent, 0.8);
         }
     }
 
@@ -1998,6 +2098,9 @@
     $volumeSlider.addEventListener('input', function() {
         volume = parseInt(this.value, 10) / 100;
         $volumeLabel.textContent = this.value + '%';
+        if (masterGainNode) {
+            masterGainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+        }
     });
 
     $playBtn.addEventListener('click', function() {
