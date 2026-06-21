@@ -564,6 +564,7 @@
             border: none;
             cursor: pointer;
             box-sizing: border-box;
+            margin-bottom: 24px;
         }
         .play-btn.playing {
             background: linear-gradient(135deg, #ff2e93 0%, #a200d6 100%);
@@ -724,6 +725,16 @@
             <span data-i18n="title">Metronome</span>
         </h1>
         <p class="metronome-subtitle" data-i18n="subtitle">Тренируй ритм • Прокачивай флоу</p>
+
+        <button class="play-btn" id="playBtn">
+            <svg id="playIconSvg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="margin-right: 8px;">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <svg id="stopIconSvg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="margin-right: 8px; display: none;">
+                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+            </svg>
+            <span id="playLabel" data-i18n="start">Запустить</span>
+        </button>
 
         <!-- Precision Glowing SVG Dial -->
         <div class="bpm-dial-container">
@@ -991,16 +1002,6 @@
         </div>
 
         <div class="beat-circle-container" id="beatCircles"></div>
-
-        <button class="play-btn" id="playBtn">
-            <svg id="playIconSvg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="margin-right: 8px;">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-            </svg>
-            <svg id="stopIconSvg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="margin-right: 8px; display: none;">
-                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
-            </svg>
-            <span id="playLabel" data-i18n="start">Запустить</span>
-        </button>
 
         <div style="text-align:center;margin-top:20px;">
             <span style="color:#9ca3af;font-size:0.85em; font-weight: 500;" data-i18n="shortcuts">
